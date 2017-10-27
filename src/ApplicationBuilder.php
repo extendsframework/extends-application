@@ -266,7 +266,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
             }
 
             if ($module instanceof ConfigProviderInterface) {
-                $merged[] = $merger->merge(
+                $merged = $merger->merge(
                     $merged,
                     $module->getConfig()->load()
                 );
