@@ -254,21 +254,26 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      *
      * @return array
      * @throws LoaderException
+     * @throws MergerException
      */
     protected function getModuleConfig(): array
     {
-        $loaded = [];
+        $merged = [];
+        $merger = $this->getMerger();
         foreach ($this->getModules() as $module) {
             if ($module instanceof ConditionProviderInterface && $module->isConditioned() === true) {
                 continue;
             }
 
             if ($module instanceof ConfigProviderInterface) {
-                $loaded[] = $module->getConfig()->load();
+                $merged[] = $merger->merge(
+                    $merged,
+                    $module->getConfig()->load()
+                );
             }
         }
 
-        return $loaded;
+        return $merged;
     }
 
     /**
