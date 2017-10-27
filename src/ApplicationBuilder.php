@@ -313,13 +313,13 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     }
 
     /**
-     * Get cache filename.
+     * Get cache filename without extension.
      *
      * @return string
      */
     protected function getCacheFilename(): string
     {
-        return $this->cacheFilename ?? 'config.cache.php';
+        return $this->cacheFilename ?? 'config.cache';
     }
 
     /**
