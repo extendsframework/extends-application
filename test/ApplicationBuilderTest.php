@@ -48,21 +48,21 @@ class ApplicationBuilderTest extends TestCase
             unlink($cacheFile);
         }
 
-        $config = [
-            ServiceLocatorInterface::class => [
-                ClosureResolver::class => [
-                    ApplicationInterface::class => function () {
-                        return $this->createMock(ApplicationInterface::class);
-                    }
-                ],
-            ],
-        ];
-
         $loader = $this->createMock(LoaderInterface::class);
         $loader
             ->expects($this->once())
             ->method('load')
-            ->willReturn($config);
+            ->willReturn([
+                [
+                    ServiceLocatorInterface::class => [
+                        ClosureResolver::class => [
+                            ApplicationInterface::class => function () {
+                                return $this->createMock(ApplicationInterface::class);
+                            }
+                        ],
+                    ],
+                ],
+            ]);
 
         /**
          * @var LoaderInterface                $loader
@@ -83,14 +83,18 @@ class ApplicationBuilderTest extends TestCase
         $this->assertInstanceOf(ApplicationInterface::class, $application);
         $this->assertSame(sprintf(
             "<?php return %s;\n",
-            var_export(array_merge(
-                [
-                    'global' => false,
-                    'foo' => 'bar',
-                    'local' => true,
+            var_export([
+                'global' => false,
+                'foo' => 'bar',
+                'local' => true,
+                ServiceLocatorInterface::class => [
+                    ClosureResolver::class => [
+                        ApplicationInterface::class => function () {
+                            return $this->createMock(ApplicationInterface::class);
+                        }
+                    ],
                 ],
-                $config
-            ), true)
+            ], true)
         ), file_get_contents(__DIR__ . '/config/application.cache.php') . PHP_EOL);
 
         unlink($cacheFile);
