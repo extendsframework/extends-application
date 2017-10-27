@@ -14,8 +14,8 @@ use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
 use ExtendsFramework\ServiceLocator\Config\Merger\MergerException;
 use ExtendsFramework\ServiceLocator\Config\Merger\MergerInterface;
 use ExtendsFramework\ServiceLocator\Config\Merger\Recursive\RecursiveMerger;
-use ExtendsFramework\ServiceLocator\ServiceLocator;
-use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
+use ExtendsFramework\ServiceLocator\ServiceLocatorFactory;
+use ExtendsFramework\ServiceLocator\ServiceLocatorFactoryInterface;
 
 class ApplicationBuilder implements ApplicationBuilderInterface
 {
@@ -69,6 +69,13 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     protected $merger;
 
     /**
+     * Service locator factory.
+     *
+     * @var ServiceLocatorFactoryInterface
+     */
+    protected $factory;
+
+    /**
      * @inheritDoc
      */
     public function build(): ApplicationInterface
@@ -79,10 +86,12 @@ class ApplicationBuilder implements ApplicationBuilderInterface
             throw new FailedToLoadCache($exception);
         }
 
-        $application = new Application(
-            $this->getServiceLocator($config),
-            $this->modules
-        );
+        $application = $this
+            ->getServiceLocatorFactory()
+            ->create($config)
+            ->getService(ApplicationInterface::class, [
+                'modules' => $this->modules
+            ]);
 
         $this->reset();
 
@@ -156,6 +165,19 @@ class ApplicationBuilder implements ApplicationBuilderInterface
         if ($enabled ?? true) {
             $this->modules[] = $module;
         }
+
+        return $this;
+    }
+
+    /**
+     * Set service locator factory.
+     *
+     * @param ServiceLocatorFactoryInterface $factory
+     * @return ApplicationBuilder
+     */
+    public function setServiceLocatorFactory(ServiceLocatorFactoryInterface $factory): ApplicationBuilder
+    {
+        $this->factory = $factory;
 
         return $this;
     }
@@ -278,14 +300,17 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     }
 
     /**
-     * Get service locator.
+     * Get service locator factory.
      *
-     * @param array $config
-     * @return ServiceLocatorInterface
+     * @return ServiceLocatorFactoryInterface
      */
-    protected function getServiceLocator(array $config): ServiceLocatorInterface
+    protected function getServiceLocatorFactory(): ServiceLocatorFactoryInterface
     {
-        return new ServiceLocator($config);
+        if (!$this->factory instanceof ServiceLocatorFactoryInterface) {
+            $this->factory = new ServiceLocatorFactory();
+        }
+
+        return $this->factory ?: new ServiceLocatorFactory();
     }
 
     /**

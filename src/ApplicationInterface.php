@@ -10,5 +10,5 @@ interface ApplicationInterface
      *
      * @throws ApplicationException
      */
-    public function run(): void;
+    public function bootstrap(): void;
 }

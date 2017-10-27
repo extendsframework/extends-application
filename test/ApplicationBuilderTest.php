@@ -6,6 +6,9 @@ namespace ExtendsFramework\Application;
 use ExtendsFramework\Application\Module\ModuleInterface;
 use ExtendsFramework\Application\Module\Provider\ConfigProviderInterface;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
+use ExtendsFramework\ServiceLocator\Resolver\Closure\ClosureResolver;
+use ExtendsFramework\ServiceLocator\ServiceLocatorFactoryInterface;
+use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 use PHPUnit\Framework\TestCase;
 
 class ApplicationBuilderTest extends TestCase
@@ -19,6 +22,7 @@ class ApplicationBuilderTest extends TestCase
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setCacheLocation()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setCacheFilename()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setCacheEnabled()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::setServiceLocatorFactory()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::addModule()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::build()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getConfig()
@@ -30,7 +34,7 @@ class ApplicationBuilderTest extends TestCase
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getGlobalConfig()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getModuleConfig()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getModules()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getServiceLocator()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::getServiceLocatorFactory()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::reset()
      */
     public function testBuild(): void
@@ -40,23 +44,25 @@ class ApplicationBuilderTest extends TestCase
             unlink($cacheFile);
         }
 
+        $config = [
+            ServiceLocatorInterface::class => [
+                ClosureResolver::class => [
+                    ApplicationInterface::class => function () {
+                        return $this->createMock(ApplicationInterface::class);
+                    }
+                ],
+            ],
+        ];
+
         $loader = $this->createMock(LoaderInterface::class);
         $loader
-            ->expects($this->exactly(2))
+            ->expects($this->once())
             ->method('load')
-            ->willReturnOnConsecutiveCalls(
-                [
-                    'bar' => 'baz'
-                ],
-                [
-                    'qux' => [
-                        'quux' => 'foo'
-                    ],
-                ]
-            );
+            ->willReturn($config);
 
         /**
-         * @var LoaderInterface $loader
+         * @var LoaderInterface                $loader
+         * @var ServiceLocatorFactoryInterface $factory
          */
         $builder = new ApplicationBuilder();
         $application = $builder
@@ -66,20 +72,18 @@ class ApplicationBuilderTest extends TestCase
             ->setCacheFilename('application.cache')
             ->setCacheEnabled(true)
             ->addModule(new ModuleConfigStub($loader))
-            ->addModule(new ModuleConfigStub($loader))
             ->build();
 
         $this->assertInstanceOf(ApplicationInterface::class, $application);
         $this->assertSame(sprintf(
             "<?php return %s;\n",
-            var_export([
-                'foo' => 'bar',
-                'local' => true,
-                'bar' => 'baz',
-                'qux' => [
-                    'quux' => 'foo'
+            var_export(array_merge(
+                [
+                    'foo' => 'bar',
+                    'local' => true,
                 ],
-            ], true)
+                $config
+            ), true)
         ), file_get_contents(__DIR__ . '/config/application.cache.php') . PHP_EOL);
 
         unlink($cacheFile);
@@ -92,6 +96,7 @@ class ApplicationBuilderTest extends TestCase
      *
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setCacheFilename()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setCacheEnabled()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::setServiceLocatorFactory()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::addModule()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::build()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getConfig()
@@ -99,7 +104,7 @@ class ApplicationBuilderTest extends TestCase
      * @covers \ExtendsFramework\Application\ApplicationBuilder::isCacheEnabled()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getCacheLocation()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getCacheFilename()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getServiceLocator()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::getServiceLocatorFactory()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::reset()
      */
     public function testCached(): void
@@ -109,14 +114,29 @@ class ApplicationBuilderTest extends TestCase
             ->expects($this->never())
             ->method('load');
 
+        $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
+        $serviceLocator
+            ->expects($this->once())
+            ->method('getService')
+            ->with(ApplicationInterface::class)
+            ->willReturn($this->createMock(ApplicationInterface::class));
+
+        $factory = $this->createMock(ServiceLocatorFactoryInterface::class);
+        $factory
+            ->expects($this->once())
+            ->method('create')
+            ->willReturn($serviceLocator);
+
         /**
-         * @var LoaderInterface $loader
+         * @var LoaderInterface                $loader
+         * @var ServiceLocatorFactoryInterface $factory
          */
         $builder = new ApplicationBuilder();
         $application = $builder
             ->setCacheLocation(__DIR__ . '/config/global/')
             ->setCacheEnabled(true)
             ->setCacheFilename('fake.global')
+            ->setServiceLocatorFactory($factory)
             ->addModule(new ModuleConfigStub($loader))
             ->build();
 
