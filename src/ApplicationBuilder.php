@@ -358,5 +358,6 @@ class ApplicationBuilder implements ApplicationBuilderInterface
         $this->modules = [];
         $this->loader = null;
         $this->merger = null;
+        $this->factory = null;
     }
 }
