@@ -6,7 +6,7 @@ namespace ExtendsFramework\Application;
 interface ApplicationInterface
 {
     /**
-     * Run application.
+     * Bootstrap application.
      *
      * @throws ApplicationException
      */
