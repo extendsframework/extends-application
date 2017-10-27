@@ -18,6 +18,7 @@ class ApplicationBuilderTest extends TestCase
      *
      * Test that builder will load and cache config and build an instance of ApplicationInterface.
      *
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::addConfig()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::addGlobalConfigPath()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setCacheLocation()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setCacheFilename()
@@ -26,6 +27,7 @@ class ApplicationBuilderTest extends TestCase
      * @covers \ExtendsFramework\Application\ApplicationBuilder::addModule()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::build()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getConfig()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::getConfigs()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getLoader()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getMerger()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::isCacheEnabled()
@@ -66,6 +68,7 @@ class ApplicationBuilderTest extends TestCase
          */
         $builder = new ApplicationBuilder();
         $application = $builder
+            ->addConfig(new ConfigLoaderStub())
             ->addGlobalConfigPath(__DIR__ . '/config/global/{,*.}{global,local}.php')
             ->addGlobalConfigPath(__DIR__ . '/config/local/{,*.}{global,local}.php')
             ->setCacheLocation(__DIR__ . '/config/')
@@ -79,6 +82,7 @@ class ApplicationBuilderTest extends TestCase
             "<?php return %s;\n",
             var_export(array_merge(
                 [
+                    'global' => false,
                     'foo' => 'bar',
                     'local' => true,
                 ],
@@ -189,5 +193,18 @@ class ModuleConfigStub implements ModuleInterface, ConfigProviderInterface
     public function getConfig(): LoaderInterface
     {
         return $this->loader;
+    }
+}
+
+class ConfigLoaderStub implements LoaderInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function load(): array
+    {
+        return [
+            'global' => false
+        ];
     }
 }

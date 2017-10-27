@@ -5,6 +5,7 @@ namespace ExtendsFramework\Application;
 
 use ExtendsFramework\Application\Exception\CacheLocationMissing;
 use ExtendsFramework\Application\Exception\FailedToLoadCache;
+use ExtendsFramework\Application\Framework\ServiceLocator\Config\ConfigLoader;
 use ExtendsFramework\Application\Module\ModuleInterface;
 use ExtendsFramework\Application\Module\Provider\ConfigProviderInterface;
 use ExtendsFramework\ServiceLocator\Config\Loader\Cache\CacheLoader;
@@ -53,6 +54,13 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      * @var ModuleInterface[]
      */
     protected $modules = [];
+
+    /**
+     * Framework configs.
+     *
+     * @var LoaderInterface[]
+     */
+    protected $configs = [];
 
     /**
      * Config loader.
@@ -109,6 +117,19 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     public function addGlobalConfigPath(string $globalConfigPath): ApplicationBuilder
     {
         $this->globalConfigPaths[] = $globalConfigPath;
+
+        return $this;
+    }
+
+    /**
+     * Add config loader.
+     *
+     * @param LoaderInterface $loader
+     * @return ApplicationBuilder
+     */
+    public function addConfig(LoaderInterface $loader): ApplicationBuilder
+    {
+        $this->configs[] = $loader;
 
         return $this;
     }
@@ -203,6 +224,13 @@ class ApplicationBuilder implements ApplicationBuilderInterface
 
         $merged = [];
         $merger = $this->getMerger();
+        foreach ($this->getConfigs() as $config) {
+            $merged = $merger->merge(
+                $merged,
+                $config->load()
+            );
+        }
+
         foreach ($this->getGlobalConfig() as $global) {
             $merged = $merger->merge($merged, $global);
         }
@@ -252,6 +280,16 @@ class ApplicationBuilder implements ApplicationBuilderInterface
         }
 
         return $loader->load();
+    }
+
+    /**
+     * Get config loaders.
+     *
+     * @return ConfigLoader[]
+     */
+    protected function getConfigs(): array
+    {
+        return $this->configs;
     }
 
     /**
@@ -356,6 +394,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
         $this->cacheFilename = null;
         $this->cacheEnabled = null;
         $this->modules = [];
+        $this->configs = [];
         $this->loader = null;
         $this->merger = null;
         $this->factory = null;
