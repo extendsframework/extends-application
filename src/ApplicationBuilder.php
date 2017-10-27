@@ -5,7 +5,7 @@ namespace ExtendsFramework\Application;
 
 use ExtendsFramework\Application\Exception\CacheLocationMissing;
 use ExtendsFramework\Application\Exception\FailedToLoadCache;
-use ExtendsFramework\Application\Framework\ServiceLocator\Config\ConfigLoader;
+use ExtendsFramework\Application\Framework\ServiceLocator\Loader\ApplicationConfigLoader;
 use ExtendsFramework\Application\Module\ModuleInterface;
 use ExtendsFramework\Application\Module\Provider\ConfigProviderInterface;
 use ExtendsFramework\ServiceLocator\Config\Loader\Cache\CacheLoader;
@@ -285,7 +285,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     /**
      * Get config loaders.
      *
-     * @return ConfigLoader[]
+     * @return ApplicationConfigLoader[]
      */
     protected function getConfigs(): array
     {
