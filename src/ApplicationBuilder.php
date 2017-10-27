@@ -111,12 +111,14 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      *
      * All the added global config paths will be merged in chronological order.
      *
-     * @param string $globalConfigPath
+     * @param string[] ...$globalConfigPaths
      * @return ApplicationBuilder
      */
-    public function addGlobalConfigPath(string $globalConfigPath): ApplicationBuilder
+    public function addGlobalConfigPath(string ...$globalConfigPaths): ApplicationBuilder
     {
-        $this->globalConfigPaths[] = $globalConfigPath;
+        foreach ($globalConfigPaths as $globalConfigPath) {
+            $this->globalConfigPaths[] = $globalConfigPath;
+        }
 
         return $this;
     }
@@ -124,12 +126,14 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     /**
      * Add config loader.
      *
-     * @param LoaderInterface $loader
+     * @param LoaderInterface[] ...$loaders
      * @return ApplicationBuilder
      */
-    public function addConfig(LoaderInterface $loader): ApplicationBuilder
+    public function addConfig(LoaderInterface ...$loaders): ApplicationBuilder
     {
-        $this->configs[] = $loader;
+        foreach ($loaders as $loader) {
+            $this->configs[] = $loader;
+        }
 
         return $this;
     }
