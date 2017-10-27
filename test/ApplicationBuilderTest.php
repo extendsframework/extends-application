@@ -4,11 +4,13 @@ declare(strict_types=1);
 namespace ExtendsFramework\Application;
 
 use ExtendsFramework\Application\Module\ModuleInterface;
+use ExtendsFramework\Application\Module\Provider\ConditionProviderInterface;
 use ExtendsFramework\Application\Module\Provider\ConfigProviderInterface;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
 use ExtendsFramework\ServiceLocator\Resolver\Closure\ClosureResolver;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactoryInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 
 class ApplicationBuilderTest extends TestCase
@@ -75,6 +77,7 @@ class ApplicationBuilderTest extends TestCase
             ->setCacheFilename('application.cache')
             ->setCacheEnabled(true)
             ->addModule(new ModuleConfigStub($loader))
+            ->addModule(new ModuleConditionedStub())
             ->build();
 
         $this->assertInstanceOf(ApplicationInterface::class, $application);
@@ -142,6 +145,7 @@ class ApplicationBuilderTest extends TestCase
             ->setCacheFilename('fake.global')
             ->setServiceLocatorFactory($factory)
             ->addModule(new ModuleConfigStub($loader))
+            ->addModule(new ModuleConditionedStub())
             ->build();
 
         $this->assertInstanceOf(ApplicationInterface::class, $application);
@@ -193,6 +197,25 @@ class ModuleConfigStub implements ModuleInterface, ConfigProviderInterface
     public function getConfig(): LoaderInterface
     {
         return $this->loader;
+    }
+}
+
+class ModuleConditionedStub implements ModuleInterface, ConfigProviderInterface, ConditionProviderInterface
+{
+    /**
+     * @inheritDoc
+     */
+    public function isConditioned(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getConfig(): LoaderInterface
+    {
+        throw new LogicException('Can not load config from conditioned module.');
     }
 }
 

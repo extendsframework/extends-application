@@ -7,6 +7,7 @@ use ExtendsFramework\Application\Exception\CacheLocationMissing;
 use ExtendsFramework\Application\Exception\FailedToLoadCache;
 use ExtendsFramework\Application\Framework\ServiceLocator\Loader\ApplicationConfigLoader;
 use ExtendsFramework\Application\Module\ModuleInterface;
+use ExtendsFramework\Application\Module\Provider\ConditionProviderInterface;
 use ExtendsFramework\Application\Module\Provider\ConfigProviderInterface;
 use ExtendsFramework\ServiceLocator\Config\Loader\Cache\CacheLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\File\FileLoader;
@@ -178,16 +179,12 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     /**
      * Add module.
      *
-     * When $enabled is false, the module won't be added. This comes in handy when a module can only be enabled  in
-     * specific situations, like a administrative module for console only. Default value for $enabled is true.
-     *
-     * @param ModuleInterface $module
-     * @param bool|null       $enabled
+     * @param ModuleInterface[] ...$modules
      * @return ApplicationBuilder
      */
-    public function addModule(ModuleInterface $module, bool $enabled = null): ApplicationBuilder
+    public function addModule(ModuleInterface ...$modules): ApplicationBuilder
     {
-        if ($enabled ?? true) {
+        foreach ($modules as $module) {
             $this->modules[] = $module;
         }
 
@@ -262,6 +259,10 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     {
         $loaded = [];
         foreach ($this->getModules() as $module) {
+            if ($module instanceof ConditionProviderInterface && $module->isConditioned() === true) {
+                continue;
+            }
+
             if ($module instanceof ConfigProviderInterface) {
                 $loaded[] = $module->getConfig()->load();
             }
