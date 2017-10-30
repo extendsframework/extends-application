@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace ExtendsFramework\Application;
 
 use ExtendsFramework\Application\Module\ModuleInterface;
-use ExtendsFramework\Application\Module\Provider\BootstrapProviderInterface;
+use ExtendsFramework\Application\Module\Provider\ShutdownProviderInterface;
+use ExtendsFramework\Application\Module\Provider\StartupProviderInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 
 abstract class AbstractApplication implements ApplicationInterface
@@ -40,17 +41,48 @@ abstract class AbstractApplication implements ApplicationInterface
      */
     public function bootstrap(): void
     {
+        $this
+            ->triggerOnStartup()
+            ->run()
+            ->triggerOnShutdown();
+    }
+
+    /**
+     * Trigger startup providers.
+     *
+     * @return AbstractApplication
+     */
+    protected function triggerOnStartup(): AbstractApplication
+    {
         foreach ($this->modules as $module) {
-            if ($module instanceof BootstrapProviderInterface) {
-                $module->onBootstrap($this->serviceLocator);
+            if ($module instanceof StartupProviderInterface) {
+                $module->onStartup($this->serviceLocator);
             }
         }
 
-        $this->run();
+        return $this;
+    }
+
+    /**
+     * Trigger shutdown providers.
+     *
+     * @return AbstractApplication
+     */
+    protected function triggerOnShutdown(): AbstractApplication
+    {
+        foreach ($this->modules as $module) {
+            if ($module instanceof ShutdownProviderInterface) {
+                $module->onShutdown($this->serviceLocator);
+            }
+        }
+
+        return $this;
     }
 
     /**
      * Run application.
+     *
+     * @return AbstractApplication
      */
-    abstract protected function run(): void;
+    abstract protected function run(): AbstractApplication;
 }

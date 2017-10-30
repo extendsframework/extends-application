@@ -5,13 +5,13 @@ namespace ExtendsFramework\Application\Module\Provider;
 
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 
-interface BootstrapProviderInterface
+interface StartupProviderInterface
 {
     /**
-     * Bootstrap module.
+     * Module startup.
      *
      * @param ServiceLocatorInterface $serviceLocator
      * @return void
      */
-    public function onBootstrap(ServiceLocatorInterface $serviceLocator): void;
+    public function onStartup(ServiceLocatorInterface $serviceLocator): void;
 }

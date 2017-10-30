@@ -29,8 +29,10 @@ class ConsoleApplication extends AbstractApplication
     /**
      * @inheritDoc
      */
-    protected function run(): void
+    protected function run(): AbstractApplication
     {
         $this->terminal->run();
+
+        return $this;
     }
 }

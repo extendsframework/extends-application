@@ -29,8 +29,10 @@ class HttpApplication extends AbstractApplication
     /**
      * @inheritDoc
      */
-    protected function run(): void
+    protected function run(): AbstractApplication
     {
         $this->server->run();
+
+        return $this;
     }
 }

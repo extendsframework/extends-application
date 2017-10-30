@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace ExtendsFramework\Application;
 
 use ExtendsFramework\Application\Module\ModuleInterface;
-use ExtendsFramework\Application\Module\Provider\BootstrapProviderInterface;
+use ExtendsFramework\Application\Module\Provider\ShutdownProviderInterface;
+use ExtendsFramework\Application\Module\Provider\StartupProviderInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -17,6 +18,8 @@ class AbstractApplicationTest extends TestCase
      *
      * @covers \ExtendsFramework\Application\AbstractApplication::__construct()
      * @covers \ExtendsFramework\Application\AbstractApplication::bootstrap()
+     * @covers \ExtendsFramework\Application\AbstractApplication::triggerOnStartup()
+     * @covers \ExtendsFramework\Application\AbstractApplication::triggerOnShutdown()
      */
     public function testBootstrap(): void
     {
@@ -31,31 +34,53 @@ class AbstractApplicationTest extends TestCase
         ]);
         $application->bootstrap();
 
-        $this->assertTrue($module->isCalled());
+        $this->assertTrue($module->isStartup());
+        $this->assertTrue($module->isShutdown());
     }
 }
 
-class ModuleBootstrapStub implements ModuleInterface, BootstrapProviderInterface
+class ModuleBootstrapStub implements ModuleInterface, StartupProviderInterface, ShutdownProviderInterface
 {
     /**
      * @var bool
      */
-    protected $called = false;
+    protected $startup = false;
+
+    /**
+     * @var bool
+     */
+    protected $shutdown = false;
 
     /**
      * @inheritDoc
      */
-    public function onBootstrap(ServiceLocatorInterface $serviceLocator): void
+    public function onStartup(ServiceLocatorInterface $serviceLocator): void
     {
-        $this->called = true;
+        $this->startup = true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function onShutdown(ServiceLocatorInterface $serviceLocator): void
+    {
+        $this->shutdown = true;
     }
 
     /**
      * @return bool
      */
-    public function isCalled(): bool
+    public function isStartup(): bool
     {
-        return $this->called;
+        return $this->startup;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShutdown(): bool
+    {
+        return $this->shutdown;
     }
 }
 
@@ -77,8 +102,10 @@ class AbstractApplicationStub extends AbstractApplication
     /**
      * @inheritDoc
      */
-    protected function run(): void
+    protected function run(): AbstractApplication
     {
         $this->called = true;
+
+        return $this;
     }
 }
