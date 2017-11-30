@@ -9,13 +9,13 @@ use ExtendsFramework\Application\Framework\ServiceLocator\Loader\ApplicationConf
 use ExtendsFramework\Application\Module\ModuleInterface;
 use ExtendsFramework\Application\Module\Provider\ConditionProviderInterface;
 use ExtendsFramework\Application\Module\Provider\ConfigProviderInterface;
+use ExtendsFramework\Basic\Merger\MergerException;
+use ExtendsFramework\Basic\Merger\MergerInterface;
+use ExtendsFramework\Basic\Merger\Recursive\RecursiveMerger;
 use ExtendsFramework\ServiceLocator\Config\Loader\Cache\CacheLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\File\FileLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderException;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
-use ExtendsFramework\ServiceLocator\Config\Merger\MergerException;
-use ExtendsFramework\ServiceLocator\Config\Merger\MergerInterface;
-use ExtendsFramework\ServiceLocator\Config\Merger\Recursive\RecursiveMerger;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactory;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactoryInterface;
 
@@ -99,7 +99,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
             ->getServiceLocatorFactory()
             ->create($config)
             ->getService(ApplicationInterface::class, [
-                'modules' => $this->modules
+                'modules' => $this->modules,
             ]);
 
         $this->reset();

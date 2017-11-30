@@ -19,7 +19,7 @@ class ApplicationConfigLoader implements LoaderInterface
         return [
             ServiceLocatorInterface::class => [
                 FactoryResolver::class => [
-                    ApplicationInterface::class => ApplicationFactory::class
+                    ApplicationInterface::class => ApplicationFactory::class,
                 ],
             ],
         ];
