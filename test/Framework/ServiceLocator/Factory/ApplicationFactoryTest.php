@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ExtendsFramework\Application\Framework\ServiceLocator\Factory;
 
 use ExtendsFramework\Application\ApplicationInterface;
-use ExtendsFramework\Console\Terminal\TerminalInterface;
-use ExtendsFramework\Http\Server\ServerInterface;
+use ExtendsFramework\Terminal\TerminalInterface;
+use ExtendsFramework\Server\ServerInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 use PHPUnit\Framework\TestCase;
 

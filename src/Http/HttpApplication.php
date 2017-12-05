@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ExtendsFramework\Application\Http;
 
 use ExtendsFramework\Application\AbstractApplication;
-use ExtendsFramework\Http\Server\ServerInterface;
+use ExtendsFramework\Server\ServerInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 
 class HttpApplication extends AbstractApplication

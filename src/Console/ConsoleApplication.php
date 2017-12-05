@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ExtendsFramework\Application\Console;
 
 use ExtendsFramework\Application\AbstractApplication;
-use ExtendsFramework\Console\Terminal\TerminalInterface;
+use ExtendsFramework\Terminal\TerminalInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 
 class ConsoleApplication extends AbstractApplication

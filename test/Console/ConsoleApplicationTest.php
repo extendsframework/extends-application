@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ExtendsFramework\Application\Console;
 
-use ExtendsFramework\Console\Terminal\TerminalInterface;
+use ExtendsFramework\Terminal\TerminalInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 use PHPUnit\Framework\TestCase;
 
