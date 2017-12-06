@@ -14,10 +14,12 @@
     "require": {
         "php": ">=7.1",
         "extendsframework/extends-servicelocator": "dev-master",
+        "extendsframework/extends-terminal": "dev-master",
         "extendsframework/extends-console": "dev-master",
         "extendsframework/extends-router": "dev-master",
         "extendsframework/extends-server": "dev-master",
         "extendsframework/extends-basic": "dev-master",
+        "extendsframework/extends-shell": "dev-master",
         "extendsframework/extends-http": "dev-master"
     },
     "require-dev": {
