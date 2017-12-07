@@ -13,8 +13,12 @@
     "require": {
         "php": ">=7.1",
         "extendsframework/extends-servicelocator": "dev-master",
+        "extendsframework/extends-authentication": "dev-master",
+        "extendsframework/extends-authorization": "dev-master",
         "extendsframework/extends-validator": "dev-master",
+        "extendsframework/extends-identity": "dev-master",
         "extendsframework/extends-terminal": "dev-master",
+        "extendsframework/extends-security": "dev-master",
         "extendsframework/extends-console": "dev-master",
         "extendsframework/extends-router": "dev-master",
         "extendsframework/extends-server": "dev-master",
