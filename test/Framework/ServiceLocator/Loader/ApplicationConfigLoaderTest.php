@@ -16,6 +16,7 @@ use ExtendsFramework\Router\Framework\Http\Middleware\Controller\ControllerMiddl
 use ExtendsFramework\Router\Framework\Http\Middleware\Router\RouterMiddleware;
 use ExtendsFramework\Security\Framework\Http\Middleware\RouterAuthorizationMiddleware;
 use ExtendsFramework\ServiceLocator\Resolver\Factory\FactoryResolver;
+use ExtendsFramework\ServiceLocator\Resolver\Invokable\InvokableResolver;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -36,6 +37,9 @@ class ApplicationConfigLoaderTest extends TestCase
             ServiceLocatorInterface::class => [
                 FactoryResolver::class => [
                     ApplicationInterface::class => ApplicationFactory::class,
+                ],
+                InvokableResolver::class => [
+                    NotImplementedMiddleware::class => NotImplementedMiddleware::class,
                 ],
             ],
             MiddlewareChainInterface::class => [
