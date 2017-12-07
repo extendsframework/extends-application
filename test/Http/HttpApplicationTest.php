@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ExtendsFramework\Application\Http;
+namespace ExtendsFramework\Application\Server;
 
 use ExtendsFramework\Server\ServerInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
@@ -14,8 +14,8 @@ class HttpApplicationTest extends TestCase
      *
      * Test that server will run.
      *
-     * @covers \ExtendsFramework\Application\Http\HttpApplication::__construct()
-     * @covers \ExtendsFramework\Application\Http\HttpApplication::run()
+     * @covers \ExtendsFramework\Application\Server\ServerApplication::__construct()
+     * @covers \ExtendsFramework\Application\Server\ServerApplication::run()
      */
     public function testRun(): void
     {
@@ -30,7 +30,7 @@ class HttpApplicationTest extends TestCase
          * @var ServerInterface         $server
          * @var ServiceLocatorInterface $serviceLocator
          */
-        $application = new HttpApplication($server, $serviceLocator, []);
+        $application = new ServerApplication($server, $serviceLocator, []);
         $application->bootstrap();
     }
 }

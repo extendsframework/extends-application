@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace ExtendsFramework\Application\Http;
+namespace ExtendsFramework\Application\Server;
 
 use ExtendsFramework\Application\AbstractApplication;
 use ExtendsFramework\Server\ServerInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 
-class HttpApplication extends AbstractApplication
+class ServerApplication extends AbstractApplication
 {
     /**
      * Http server.

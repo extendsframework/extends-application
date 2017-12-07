@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ExtendsFramework\Application\Console;
+namespace ExtendsFramework\Application\Terminal;
 
 use ExtendsFramework\Terminal\TerminalInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
@@ -14,8 +14,8 @@ class ConsoleApplicationTest extends TestCase
      *
      * Test that server will run.
      *
-     * @covers \ExtendsFramework\Application\Console\ConsoleApplication::__construct()
-     * @covers \ExtendsFramework\Application\Console\ConsoleApplication::run()
+     * @covers \ExtendsFramework\Application\Terminal\TerminalApplication::__construct()
+     * @covers \ExtendsFramework\Application\Terminal\TerminalApplication::run()
      */
     public function testRun(): void
     {
@@ -30,7 +30,7 @@ class ConsoleApplicationTest extends TestCase
          * @var TerminalInterface       $terminal
          * @var ServiceLocatorInterface $serviceLocator
          */
-        $application = new ConsoleApplication($terminal, $serviceLocator, []);
+        $application = new TerminalApplication($terminal, $serviceLocator, []);
         $application->bootstrap();
     }
 }

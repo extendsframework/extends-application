@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace ExtendsFramework\Application\Console;
+namespace ExtendsFramework\Application\Terminal;
 
 use ExtendsFramework\Application\AbstractApplication;
-use ExtendsFramework\Terminal\TerminalInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
+use ExtendsFramework\Terminal\TerminalInterface;
 
-class ConsoleApplication extends AbstractApplication
+class TerminalApplication extends AbstractApplication
 {
     /**
      * Console terminal.

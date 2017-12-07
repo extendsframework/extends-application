@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace ExtendsFramework\Application\Framework\ServiceLocator\Factory;
 
 use ExtendsFramework\Application\ApplicationInterface;
-use ExtendsFramework\Application\Console\ConsoleApplication;
-use ExtendsFramework\Application\Http\HttpApplication;
+use ExtendsFramework\Application\Terminal\TerminalApplication;
+use ExtendsFramework\Application\Server\ServerApplication;
 use ExtendsFramework\Terminal\TerminalInterface;
 use ExtendsFramework\Server\ServerInterface;
 use ExtendsFramework\ServiceLocator\Resolver\Factory\ServiceFactoryInterface;
@@ -30,13 +30,13 @@ class ApplicationFactory implements ServiceFactoryInterface
      * Get console application.
      *
      * @param ServiceLocatorInterface $serviceLocator
-     * @return ConsoleApplication
+     * @return TerminalApplication
      * @throws ServiceLocatorException
      *
      */
-    protected function getConsoleApplication(ServiceLocatorInterface $serviceLocator): ConsoleApplication
+    protected function getConsoleApplication(ServiceLocatorInterface $serviceLocator): TerminalApplication
     {
-        return new ConsoleApplication(
+        return new TerminalApplication(
             $serviceLocator->getService(TerminalInterface::class),
             $serviceLocator,
             $extra['modules'] ?? []
@@ -47,12 +47,12 @@ class ApplicationFactory implements ServiceFactoryInterface
      * Get HTTP application.
      *
      * @param ServiceLocatorInterface $serviceLocator
-     * @return HttpApplication
+     * @return ServerApplication
      * @throws ServiceLocatorException
      */
-    protected function getHttpApplication(ServiceLocatorInterface $serviceLocator): HttpApplication
+    protected function getHttpApplication(ServiceLocatorInterface $serviceLocator): ServerApplication
     {
-        return new HttpApplication(
+        return new ServerApplication(
             $serviceLocator->getService(ServerInterface::class),
             $serviceLocator,
             $extra['modules'] ?? []
