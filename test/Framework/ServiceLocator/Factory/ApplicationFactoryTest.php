@@ -35,7 +35,7 @@ class ApplicationFactoryTest extends TestCase
          */
         $factory = new ApplicationFactory();
         $application = $factory->createService(ApplicationInterface::class, $serviceLocator, [
-            'modules' => []
+            'modules' => [],
         ]);
 
         $this->assertInstanceOf(ApplicationInterface::class, $application);
@@ -67,7 +67,7 @@ class ApplicationFactoryTest extends TestCase
          */
         $factory = new ApplicationFactory();
         $application = $factory->createService(ApplicationInterface::class, $serviceLocator, [
-            'modules' => []
+            'modules' => [],
         ]);
 
         $this->assertInstanceOf(ApplicationInterface::class, $application);
@@ -76,14 +76,13 @@ class ApplicationFactoryTest extends TestCase
     }
 }
 
-
 class Buffer
 {
     protected static $sapi;
 
     public static function getSapi(): string
     {
-        return static::$sapi;
+        return static::$sapi ?: 'cli';
     }
 
     public static function setSapi(string $sapi): void

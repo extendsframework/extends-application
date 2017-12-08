@@ -9,18 +9,37 @@ use ExtendsFramework\Application\Framework\ServiceLocator\Loader\ApplicationConf
 use ExtendsFramework\Application\Module\ModuleInterface;
 use ExtendsFramework\Application\Module\Provider\ConditionProviderInterface;
 use ExtendsFramework\Application\Module\Provider\ConfigProviderInterface;
+use ExtendsFramework\Authentication\Framework\ServiceLocator\Loader\AuthenticationConfigLoader;
+use ExtendsFramework\Authorization\Framework\ServiceLocator\Loader\AuthorizationConfigLoader;
 use ExtendsFramework\Basic\Merger\MergerException;
 use ExtendsFramework\Basic\Merger\MergerInterface;
 use ExtendsFramework\Basic\Merger\Recursive\RecursiveMerger;
+use ExtendsFramework\Console\Framework\ServiceLocator\Loader\ConsoleConfigLoader;
+use ExtendsFramework\Console\Shell\Framework\ServiceLocator\Loader\ConsoleShellConfigLoader;
+use ExtendsFramework\Console\Terminal\Framework\ServiceLocator\Loader\ConsoleTerminalConfigLoader;
+use ExtendsFramework\Http\Framework\ServiceLocator\Loader\HttpConfigLoader;
+use ExtendsFramework\Http\Router\Framework\ServiceLocator\Loader\HttpRouterConfigLoader;
+use ExtendsFramework\Http\Server\Framework\ServiceLocator\Loader\HttpServerConfigLoader;
+use ExtendsFramework\Identity\Framework\ServiceLocator\Loader\IdentityConfigLoader;
+use ExtendsFramework\Logger\Framework\ServiceLocator\Loader\LoggerConfigLoader;
+use ExtendsFramework\Security\Framework\ServiceLocator\Loader\SecurityConfigLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\Cache\CacheLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\File\FileLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderException;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactory;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactoryInterface;
+use ExtendsFramework\Validator\Framework\ServiceLocator\Loader\ValidatorConfigLoader;
 
 class ApplicationBuilder implements ApplicationBuilderInterface
 {
+    /**
+     * If framework is enabled.
+     *
+     * @var bool
+     */
+    protected $frameworkEnabled = true;
+
     /**
      * Global config paths for glob.
      *
@@ -83,6 +102,27 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      * @var ServiceLocatorFactoryInterface
      */
     protected $factory;
+
+    /**
+     * Framework configs.
+     *
+     * @var LoaderInterface[]
+     */
+    protected $frameworkConfigs = [
+        ApplicationConfigLoader::class,
+        AuthenticationConfigLoader::class,
+        AuthorizationConfigLoader::class,
+        SecurityConfigLoader::class,
+        IdentityConfigLoader::class,
+        ConsoleConfigLoader::class,
+        ConsoleTerminalConfigLoader::class,
+        ConsoleShellConfigLoader::class,
+        HttpConfigLoader::class,
+        HttpRouterConfigLoader::class,
+        HttpServerConfigLoader::class,
+        LoggerConfigLoader::class,
+        ValidatorConfigLoader::class,
+    ];
 
     /**
      * @inheritDoc
@@ -177,6 +217,21 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     }
 
     /**
+     * Set framework enabled.
+     *
+     * Framework is enabled by default. Default value is true.
+     *
+     * @param bool $frameworkEnabled
+     * @return ApplicationBuilder
+     */
+    public function setFrameworkEnabled(bool $frameworkEnabled = null): ApplicationBuilder
+    {
+        $this->frameworkEnabled = $frameworkEnabled ?? true;
+
+        return $this;
+    }
+
+    /**
      * Add module.
      *
      * @param ModuleInterface[] ...$modules
@@ -223,6 +278,10 @@ class ApplicationBuilder implements ApplicationBuilderInterface
             }
         }
 
+        if ($this->isFrameworkEnabled() === true) {
+            $this->addFrameworkConfigs();
+        }
+
         $merged = [];
         $merger = $this->getMerger();
         foreach ($this->getConfigs() as $config) {
@@ -247,6 +306,23 @@ class ApplicationBuilder implements ApplicationBuilderInterface
         }
 
         return $merged;
+    }
+
+    /**
+     * Add framework configs.
+     *
+     * @return ApplicationBuilder
+     */
+    protected function addFrameworkConfigs(): ApplicationBuilder
+    {
+        foreach ($this->getFrameworkConfigs() as $loader) {
+            $loader = new $loader;
+            if ($loader instanceof LoaderInterface) {
+                $this->addConfig($loader);
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -295,7 +371,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     /**
      * Get config loaders.
      *
-     * @return ApplicationConfigLoader[]
+     * @return LoaderInterface[]
      */
     protected function getConfigs(): array
     {
@@ -328,6 +404,16 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     }
 
     /**
+     * Get framework configs.
+     *
+     * @return LoaderInterface[]
+     */
+    protected function getFrameworkConfigs(): array
+    {
+        return $this->frameworkConfigs;
+    }
+
+    /**
      * Get cache enabled.
      *
      * @return bool
@@ -335,6 +421,16 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     protected function isCacheEnabled(): bool
     {
         return $this->cacheEnabled ?? false;
+    }
+
+    /**
+     * If framework is enabled.
+     *
+     * @return bool
+     */
+    protected function isFrameworkEnabled(): bool
+    {
+        return $this->frameworkEnabled;
     }
 
     /**
@@ -399,6 +495,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      */
     protected function reset(): void
     {
+        $this->frameworkEnabled = true;
         $this->globalConfigPaths = [];
         $this->cacheLocation = null;
         $this->cacheFilename = null;

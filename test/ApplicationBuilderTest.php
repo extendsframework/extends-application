@@ -6,8 +6,8 @@ namespace ExtendsFramework\Application;
 use ExtendsFramework\Application\Module\ModuleInterface;
 use ExtendsFramework\Application\Module\Provider\ConditionProviderInterface;
 use ExtendsFramework\Application\Module\Provider\ConfigProviderInterface;
+use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
-use ExtendsFramework\ServiceLocator\Resolver\Closure\ClosureResolver;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactoryInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 use LogicException;
@@ -38,6 +38,10 @@ class ApplicationBuilderTest extends TestCase
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getGlobalConfig()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getModuleConfig()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getModules()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::setFrameworkEnabled()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::isFrameworkEnabled()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::getFrameworkConfigs()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::addFrameworkConfigs()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getServiceLocatorFactory()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::reset()
      */
@@ -49,20 +53,6 @@ class ApplicationBuilderTest extends TestCase
         }
 
         $loader = $this->createMock(LoaderInterface::class);
-        $loader
-            ->expects($this->once())
-            ->method('load')
-            ->willReturn([
-                [
-                    ServiceLocatorInterface::class => [
-                        ClosureResolver::class => [
-                            ApplicationInterface::class => function () {
-                                return $this->createMock(ApplicationInterface::class);
-                            }
-                        ],
-                    ],
-                ],
-            ]);
 
         /**
          * @var LoaderInterface                $loader
@@ -70,6 +60,7 @@ class ApplicationBuilderTest extends TestCase
          */
         $builder = new ApplicationBuilder();
         $application = $builder
+            ->setFrameworkEnabled(true)
             ->addConfig(new ConfigLoaderStub())
             ->addGlobalConfigPath(__DIR__ . '/config/global/{,*.}{global,local}.php')
             ->addGlobalConfigPath(__DIR__ . '/config/local/{,*.}{global,local}.php')
@@ -81,21 +72,16 @@ class ApplicationBuilderTest extends TestCase
             ->build();
 
         $this->assertInstanceOf(ApplicationInterface::class, $application);
-        $this->assertSame(sprintf(
-            "<?php return %s;\n",
-            var_export([
-                'global' => false,
-                'foo' => 'bar',
-                'local' => true,
-                ServiceLocatorInterface::class => [
-                    ClosureResolver::class => [
-                        ApplicationInterface::class => function () {
-                            return $this->createMock(ApplicationInterface::class);
-                        }
-                    ],
-                ],
-            ], true)
-        ), file_get_contents(__DIR__ . '/config/application.cache.php') . PHP_EOL);
+
+        $file = __DIR__ . '/config/application.cache.php';
+        if (file_exists($file)) {
+            $config = include $file;
+
+            $this->assertArrayHasKey(ServiceLocatorInterface::class, $config);
+            $this->assertArrayHasKey(MiddlewareChainInterface::class, $config);
+            $this->assertArrayHasKey('local', $config);
+            $this->assertArrayHasKey('foo', $config);
+        }
 
         unlink($cacheFile);
     }
@@ -231,7 +217,7 @@ class ConfigLoaderStub implements LoaderInterface
     public function load(): array
     {
         return [
-            'global' => false
+            'global' => false,
         ];
     }
 }

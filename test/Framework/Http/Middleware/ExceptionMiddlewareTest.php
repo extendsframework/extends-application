@@ -14,7 +14,7 @@ class ExceptionMiddlewareTest extends TestCase
     /**
      * Process.
      *
-     * Test that chain is called with request and response will be returend.
+     * Test that chain is called with request and response will be returned.
      *
      * @covers \ExtendsFramework\Application\Framework\Http\Middleware\ExceptionMiddleware::process()
      */
