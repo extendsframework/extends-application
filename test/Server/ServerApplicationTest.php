@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ExtendsFramework\Application\Server;
 
-use ExtendsFramework\Server\ServerInterface;
+use ExtendsFramework\Http\Server\ServerInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 use PHPUnit\Framework\TestCase;
 

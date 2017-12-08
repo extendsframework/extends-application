@@ -14,8 +14,8 @@ use ExtendsFramework\Authentication\Framework\Http\Middleware\NotAuthenticatedMi
 use ExtendsFramework\Authorization\Framework\Http\Middleware\NotAuthorizedMiddleware;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
 use ExtendsFramework\Logger\Framework\Http\Middleware\Logger\LoggerMiddleware;
-use ExtendsFramework\Router\Framework\Http\Middleware\Controller\ControllerMiddleware;
-use ExtendsFramework\Router\Framework\Http\Middleware\Router\RouterMiddleware;
+use ExtendsFramework\Http\Router\Framework\Http\Middleware\Controller\ControllerMiddleware;
+use ExtendsFramework\Http\Router\Framework\Http\Middleware\Router\RouterMiddleware;
 use ExtendsFramework\Security\Framework\Http\Middleware\RouterAuthorizationMiddleware;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
 use ExtendsFramework\ServiceLocator\Resolver\Factory\FactoryResolver;

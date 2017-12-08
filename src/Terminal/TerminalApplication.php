@@ -5,7 +5,7 @@ namespace ExtendsFramework\Application\Terminal;
 
 use ExtendsFramework\Application\AbstractApplication;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
-use ExtendsFramework\Terminal\TerminalInterface;
+use ExtendsFramework\Console\Terminal\TerminalInterface;
 
 class TerminalApplication extends AbstractApplication
 {
