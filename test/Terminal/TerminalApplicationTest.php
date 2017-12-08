@@ -7,7 +7,7 @@ use ExtendsFramework\Terminal\TerminalInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 use PHPUnit\Framework\TestCase;
 
-class ConsoleApplicationTest extends TestCase
+class TerminalApplicationTest extends TestCase
 {
     /**
      * Run.

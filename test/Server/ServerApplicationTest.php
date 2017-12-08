@@ -7,7 +7,7 @@ use ExtendsFramework\Server\ServerInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 use PHPUnit\Framework\TestCase;
 
-class HttpApplicationTest extends TestCase
+class ServerApplicationTest extends TestCase
 {
     /**
      * Run.
