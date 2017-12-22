@@ -25,6 +25,11 @@
         "extendsframework/extends-servicelocator": "dev-master",
         "extendsframework/extends-validator": "dev-master",
         "extendsframework/extends-logger": "dev-master",
+        "extendsframework/extends-message": "dev-master",
+        "extendsframework/extends-command": "dev-master",
+        "extendsframework/extends-event": "dev-master",
+        "extendsframework/extends-sourcing": "dev-master",
+        "extendsframework/extends-serializer": "dev-master",
         "extendsframework/extends-basic": "dev-master"
     },
     "require-dev": {

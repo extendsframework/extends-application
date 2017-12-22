@@ -14,21 +14,25 @@ use ExtendsFramework\Authorization\Framework\ServiceLocator\Loader\Authorization
 use ExtendsFramework\Basic\Merger\MergerException;
 use ExtendsFramework\Basic\Merger\MergerInterface;
 use ExtendsFramework\Basic\Merger\Recursive\RecursiveMerger;
+use ExtendsFramework\Command\Framework\ServiceLocator\Loader\CommandConfigLoader;
 use ExtendsFramework\Console\Framework\ServiceLocator\Loader\ConsoleConfigLoader;
 use ExtendsFramework\Console\Shell\Framework\ServiceLocator\Loader\ConsoleShellConfigLoader;
 use ExtendsFramework\Console\Terminal\Framework\ServiceLocator\Loader\ConsoleTerminalConfigLoader;
+use ExtendsFramework\Event\Framework\ServiceLocator\Loader\EventConfigLoader;
 use ExtendsFramework\Http\Framework\ServiceLocator\Loader\HttpConfigLoader;
 use ExtendsFramework\Http\Router\Framework\ServiceLocator\Loader\HttpRouterConfigLoader;
 use ExtendsFramework\Http\Server\Framework\ServiceLocator\Loader\HttpServerConfigLoader;
 use ExtendsFramework\Identity\Framework\ServiceLocator\Loader\IdentityConfigLoader;
 use ExtendsFramework\Logger\Framework\ServiceLocator\Loader\LoggerConfigLoader;
 use ExtendsFramework\Security\Framework\ServiceLocator\Loader\SecurityConfigLoader;
+use ExtendsFramework\Serializer\Framework\ServiceLocator\Loader\SerializerConfigLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\Cache\CacheLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\File\FileLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderException;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactory;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactoryInterface;
+use ExtendsFramework\Sourcing\Framework\ServiceLocator\Loader\SourcingConfigLoader;
 use ExtendsFramework\Validator\Framework\ServiceLocator\Loader\ValidatorConfigLoader;
 
 class ApplicationBuilder implements ApplicationBuilderInterface
@@ -122,6 +126,10 @@ class ApplicationBuilder implements ApplicationBuilderInterface
         HttpServerConfigLoader::class,
         LoggerConfigLoader::class,
         ValidatorConfigLoader::class,
+        SerializerConfigLoader::class,
+        CommandConfigLoader::class,
+        EventConfigLoader::class,
+        SourcingConfigLoader::class,
     ];
 
     /**
