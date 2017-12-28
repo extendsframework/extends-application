@@ -12,9 +12,20 @@
     ],
     "require": {
         "php": "^7.2.0",
+        "extendsframework/extends-authentication": "^0.1.0",
+        "extendsframework/extends-authorization": "^0.1.0",
+        "extendsframework/extends-basic": "^0.1.0",
+        "extendsframework/extends-command": "^0.1.0",
+        "extendsframework/extends-event": "^0.1.0",
+        "extendsframework/extends-logger": "^0.1.0",
+        "extendsframework/extends-message": "^0.1.0",
         "extendsframework/extends-router": "^0.1.0",
+        "extendsframework/extends-security": "^0.1.0",
         "extendsframework/extends-servicelocator": "^0.1.0",
-        "extendsframework/extends-shell": "^0.1.0"
+        "extendsframework/extends-serializer": "^0.1.0",
+        "extendsframework/extends-shell": "^0.1.0",
+        "extendsframework/extends-sourcing": "^0.1.0",
+        "extendsframework/extends-validator": "^0.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0.0",
