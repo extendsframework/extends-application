@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ExtendsFramework\Application\Server\Renderer\Json;
+namespace ExtendsFramework\Application\Http\Renderer\Json;
 
 use ExtendsFramework\Http\Response\ResponseInterface;
 use PHPUnit\Framework\TestCase;
@@ -13,12 +13,12 @@ class JsonRendererTest extends TestCase
      *
      * Test that response will be rendered: headers sent, body encoded and HTTP status code set.
      *
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::render()
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::stringifyBody()
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::addHeaders()
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::sendHeaders()
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::sendResponseCode()
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::sendBody()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::render()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::stringifyBody()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::addHeaders()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::sendHeaders()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::sendResponseCode()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::sendBody()
      */
     public function testRender(): void
     {
@@ -83,12 +83,12 @@ class JsonRendererTest extends TestCase
      *
      * Test that no body will be send.
      *
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::render()
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::stringifyBody()
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::addHeaders()
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::sendHeaders()
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::sendResponseCode()
-     * @covers \ExtendsFramework\Application\Server\Renderer\Json\JsonRenderer::sendBody()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::render()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::stringifyBody()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::addHeaders()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::sendHeaders()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::sendResponseCode()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::sendBody()
      */
     public function testEmptyBody(): void
     {

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ExtendsFramework\Application\Framework\Http\Middleware;
 
-use ExtendsFramework\Application\Server\Renderer\RendererInterface;
+use ExtendsFramework\Application\Http\Renderer\RendererInterface;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
 use ExtendsFramework\Http\Request\RequestInterface;
 use ExtendsFramework\Http\Response\ResponseInterface;

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ExtendsFramework\Application\Server\Renderer\Json;
+namespace ExtendsFramework\Application\Http\Renderer\Json;
 
-use ExtendsFramework\Application\Server\Renderer\RendererInterface;
+use ExtendsFramework\Application\Http\Renderer\RendererInterface;
 use ExtendsFramework\Http\Response\ResponseInterface;
 
 class JsonRenderer implements RendererInterface

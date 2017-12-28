@@ -4,9 +4,10 @@ declare(strict_types=1);
 namespace ExtendsFramework\Application\Framework\ServiceLocator\Factory;
 
 use ExtendsFramework\Application\ApplicationInterface;
-use ExtendsFramework\Console\Terminal\TerminalInterface;
-use ExtendsFramework\Http\Server\ServerInterface;
+use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
+use ExtendsFramework\Http\Request\RequestInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
+use ExtendsFramework\Shell\ShellInterface;
 use PHPUnit\Framework\TestCase;
 
 class ApplicationFactoryTest extends TestCase
@@ -25,10 +26,16 @@ class ApplicationFactoryTest extends TestCase
 
         $serviceLocator = $this->createMock(ServiceLocatorInterface::class);
         $serviceLocator
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('getService')
-            ->with(ServerInterface::class)
-            ->willReturn($this->createMock(ServerInterface::class));
+            ->withConsecutive(
+                [MiddlewareChainInterface::class],
+                [RequestInterface::class]
+            )
+            ->willReturnOnConsecutiveCalls(
+                $this->createMock(MiddlewareChainInterface::class),
+                $this->createMock(RequestInterface::class)
+            );
 
         /**
          * @var ServiceLocatorInterface $serviceLocator
@@ -59,8 +66,8 @@ class ApplicationFactoryTest extends TestCase
         $serviceLocator
             ->expects($this->once())
             ->method('getService')
-            ->with(TerminalInterface::class)
-            ->willReturn($this->createMock(TerminalInterface::class));
+            ->with(ShellInterface::class)
+            ->willReturn($this->createMock(ShellInterface::class));
 
         /**
          * @var ServiceLocatorInterface $serviceLocator

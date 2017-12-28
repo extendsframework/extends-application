@@ -3,21 +3,21 @@ declare(strict_types=1);
 
 namespace ExtendsFramework\Application\Framework\ServiceLocator\Factory;
 
-use ExtendsFramework\Application\ApplicationInterface;
-use ExtendsFramework\Application\Terminal\TerminalApplication;
-use ExtendsFramework\Application\Server\ServerApplication;
-use ExtendsFramework\Console\Terminal\TerminalInterface;
-use ExtendsFramework\Http\Server\ServerInterface;
+use ExtendsFramework\Application\Console\ConsoleApplication;
+use ExtendsFramework\Application\Http\HttpApplication;
+use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
+use ExtendsFramework\Http\Request\RequestInterface;
 use ExtendsFramework\ServiceLocator\Resolver\Factory\ServiceFactoryInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorException;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
+use ExtendsFramework\Shell\ShellInterface;
 
 class ApplicationFactory implements ServiceFactoryInterface
 {
     /**
      * @inheritDoc
      */
-    public function createService(string $key, ServiceLocatorInterface $serviceLocator, array $extra = null): ApplicationInterface
+    public function createService(string $key, ServiceLocatorInterface $serviceLocator, array $extra = null): object
     {
         if (php_sapi_name() === 'cli') {
             return $this->getConsoleApplication($serviceLocator);
@@ -30,14 +30,19 @@ class ApplicationFactory implements ServiceFactoryInterface
      * Get console application.
      *
      * @param ServiceLocatorInterface $serviceLocator
-     * @return TerminalApplication
+     * @return ConsoleApplication
      * @throws ServiceLocatorException
      *
      */
-    protected function getConsoleApplication(ServiceLocatorInterface $serviceLocator): TerminalApplication
+    protected function getConsoleApplication(ServiceLocatorInterface $serviceLocator): ConsoleApplication
     {
-        return new TerminalApplication(
-            $serviceLocator->getService(TerminalInterface::class),
+        $shell = $serviceLocator->getService(ShellInterface::class);
+
+        /**
+         * @var ShellInterface $shell
+         */
+        return new ConsoleApplication(
+            $shell,
             $serviceLocator,
             $extra['modules'] ?? []
         );
@@ -47,13 +52,21 @@ class ApplicationFactory implements ServiceFactoryInterface
      * Get HTTP application.
      *
      * @param ServiceLocatorInterface $serviceLocator
-     * @return ServerApplication
+     * @return HttpApplication
      * @throws ServiceLocatorException
      */
-    protected function getHttpApplication(ServiceLocatorInterface $serviceLocator): ServerApplication
+    protected function getHttpApplication(ServiceLocatorInterface $serviceLocator): HttpApplication
     {
-        return new ServerApplication(
-            $serviceLocator->getService(ServerInterface::class),
+        $chain = $serviceLocator->getService(MiddlewareChainInterface::class);
+        $request = $serviceLocator->getService(RequestInterface::class);
+
+        /**
+         * @var MiddlewareChainInterface $chain
+         * @var RequestInterface         $request
+         */
+        return new HttpApplication(
+            $chain,
+            $request,
             $serviceLocator,
             $extra['modules'] ?? []
         );

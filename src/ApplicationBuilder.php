@@ -16,14 +16,11 @@ use ExtendsFramework\Basic\Merger\MergerInterface;
 use ExtendsFramework\Basic\Merger\Recursive\RecursiveMerger;
 use ExtendsFramework\Command\Framework\ServiceLocator\Loader\CommandConfigLoader;
 use ExtendsFramework\Console\Framework\ServiceLocator\Loader\ConsoleConfigLoader;
-use ExtendsFramework\Console\Shell\Framework\ServiceLocator\Loader\ConsoleShellConfigLoader;
-use ExtendsFramework\Console\Terminal\Framework\ServiceLocator\Loader\ConsoleTerminalConfigLoader;
 use ExtendsFramework\Event\Framework\ServiceLocator\Loader\EventConfigLoader;
 use ExtendsFramework\Http\Framework\ServiceLocator\Loader\HttpConfigLoader;
-use ExtendsFramework\Http\Router\Framework\ServiceLocator\Loader\HttpRouterConfigLoader;
-use ExtendsFramework\Http\Server\Framework\ServiceLocator\Loader\HttpServerConfigLoader;
 use ExtendsFramework\Identity\Framework\ServiceLocator\Loader\IdentityConfigLoader;
 use ExtendsFramework\Logger\Framework\ServiceLocator\Loader\LoggerConfigLoader;
+use ExtendsFramework\Router\Framework\ServiceLocator\Loader\RouterConfigLoader;
 use ExtendsFramework\Security\Framework\ServiceLocator\Loader\SecurityConfigLoader;
 use ExtendsFramework\Serializer\Framework\ServiceLocator\Loader\SerializerConfigLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\Cache\CacheLoader;
@@ -32,6 +29,7 @@ use ExtendsFramework\ServiceLocator\Config\Loader\LoaderException;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactory;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactoryInterface;
+use ExtendsFramework\Shell\Framework\ServiceLocator\Loader\ShellConfigLoader;
 use ExtendsFramework\Sourcing\Framework\ServiceLocator\Loader\SourcingConfigLoader;
 use ExtendsFramework\Validator\Framework\ServiceLocator\Loader\ValidatorConfigLoader;
 
@@ -119,11 +117,9 @@ class ApplicationBuilder implements ApplicationBuilderInterface
         SecurityConfigLoader::class,
         IdentityConfigLoader::class,
         ConsoleConfigLoader::class,
-        ConsoleTerminalConfigLoader::class,
-        ConsoleShellConfigLoader::class,
+        ShellConfigLoader::class,
         HttpConfigLoader::class,
-        HttpRouterConfigLoader::class,
-        HttpServerConfigLoader::class,
+        RouterConfigLoader::class,
         LoggerConfigLoader::class,
         ValidatorConfigLoader::class,
         SerializerConfigLoader::class,
@@ -152,6 +148,9 @@ class ApplicationBuilder implements ApplicationBuilderInterface
 
         $this->reset();
 
+        /**
+         * @var ApplicationInterface $application
+         */
         return $application;
     }
 
@@ -458,7 +457,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      */
     protected function getServiceLocatorFactory(): ServiceLocatorFactoryInterface
     {
-        if (!$this->factory instanceof ServiceLocatorFactoryInterface) {
+        if (! $this->factory instanceof ServiceLocatorFactoryInterface) {
             $this->factory = new ServiceLocatorFactory();
         }
 
@@ -473,7 +472,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      */
     protected function getLoader(): LoaderInterface
     {
-        if (!$this->loader instanceof LoaderInterface) {
+        if (! $this->loader instanceof LoaderInterface) {
             $this->loader = new CacheLoader(sprintf(
                 '%s/%s.php',
                 rtrim($this->getCacheLocation(), '/'),
@@ -491,7 +490,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      */
     protected function getMerger(): MergerInterface
     {
-        if (!$this->merger instanceof MergerInterface) {
+        if (! $this->merger instanceof MergerInterface) {
             $this->merger = new RecursiveMerger();
         }
 

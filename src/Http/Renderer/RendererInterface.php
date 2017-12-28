@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ExtendsFramework\Application\Server\Renderer;
+namespace ExtendsFramework\Application\Http\Renderer;
 
 use ExtendsFramework\Http\Response\ResponseInterface;
 
