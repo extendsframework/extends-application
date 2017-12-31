@@ -11,6 +11,7 @@ php:
 
 before_script:
   - composer install --no-interaction
+  - cp phpunit.dist.xml phpunit.xml
   - cp phpcs.dist.xml phpcs.xml
 
 script:
