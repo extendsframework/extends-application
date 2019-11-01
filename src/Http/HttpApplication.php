@@ -15,14 +15,14 @@ class HttpApplication extends AbstractApplication
      *
      * @var MiddlewareChainInterface
      */
-    protected $chain;
+    private $chain;
 
     /**
      * Request.
      *
      * @var RequestInterface
      */
-    protected $request;
+    private $request;
 
     /**
      * @inheritDoc
@@ -58,7 +58,7 @@ class HttpApplication extends AbstractApplication
      *
      * @return MiddlewareChainInterface
      */
-    protected function getChain(): MiddlewareChainInterface
+    private function getChain(): MiddlewareChainInterface
     {
         return $this->chain;
     }
@@ -68,7 +68,7 @@ class HttpApplication extends AbstractApplication
      *
      * @return RequestInterface
      */
-    protected function getRequest(): RequestInterface
+    private function getRequest(): RequestInterface
     {
         return $this->request;
     }

@@ -15,14 +15,14 @@ abstract class AbstractApplication implements ApplicationInterface
      *
      * @var ModuleInterface[]
      */
-    protected $modules;
+    private $modules;
 
     /**
      * Service locator.
      *
      * @var ServiceLocatorInterface
      */
-    protected $serviceLocator;
+    private $serviceLocator;
 
     /**
      * AbstractApplication constructor.
@@ -52,7 +52,7 @@ abstract class AbstractApplication implements ApplicationInterface
      *
      * @return AbstractApplication
      */
-    protected function triggerOnStartup(): AbstractApplication
+    private function triggerOnStartup(): AbstractApplication
     {
         foreach ($this->getModules() as $module) {
             if ($module instanceof StartupProviderInterface) {
@@ -70,7 +70,7 @@ abstract class AbstractApplication implements ApplicationInterface
      *
      * @return AbstractApplication
      */
-    protected function triggerOnShutdown(): AbstractApplication
+    private function triggerOnShutdown(): AbstractApplication
     {
         foreach ($this->getModules() as $module) {
             if ($module instanceof ShutdownProviderInterface) {
@@ -88,7 +88,7 @@ abstract class AbstractApplication implements ApplicationInterface
      *
      * @return ModuleInterface[]
      */
-    protected function getModules(): array
+    private function getModules(): array
     {
         return $this->modules;
     }

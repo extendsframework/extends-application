@@ -28,10 +28,10 @@ class JsonRenderer implements RendererInterface
      * @param ResponseInterface $response
      * @return JsonRenderer
      */
-    protected function sendHeaders(ResponseInterface $response): JsonRenderer
+    private function sendHeaders(ResponseInterface $response): JsonRenderer
     {
         foreach ($response->getHeaders() as $header => $value) {
-            if (is_array($value) === true) {
+            if (is_array($value)) {
                 $value = implode(', ', $value);
             }
 
@@ -51,7 +51,7 @@ class JsonRenderer implements RendererInterface
      * @param ResponseInterface $response
      * @return JsonRenderer
      */
-    protected function sendResponseCode(ResponseInterface $response): JsonRenderer
+    private function sendResponseCode(ResponseInterface $response): JsonRenderer
     {
         http_response_code($response->getStatusCode());
 
@@ -64,7 +64,7 @@ class JsonRenderer implements RendererInterface
      * @param string $body
      * @return JsonRenderer
      */
-    protected function sendBody(string $body): JsonRenderer
+    private function sendBody(string $body): JsonRenderer
     {
         echo $body;
 
@@ -77,7 +77,7 @@ class JsonRenderer implements RendererInterface
      * @param ResponseInterface $response
      * @return string
      */
-    protected function stringifyBody(ResponseInterface $response): string
+    private function stringifyBody(ResponseInterface $response): string
     {
         $body = $response->getBody();
         if ($body === null) {
@@ -94,7 +94,7 @@ class JsonRenderer implements RendererInterface
      * @param string            $body
      * @return ResponseInterface
      */
-    protected function addHeaders(ResponseInterface $response, string $body): ResponseInterface
+    private function addHeaders(ResponseInterface $response, string $body): ResponseInterface
     {
         return $response
             ->andHeader('Content-Type', 'application/json')

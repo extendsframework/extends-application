@@ -34,7 +34,7 @@ class ApplicationFactory implements ServiceFactoryInterface
      * @throws ServiceLocatorException
      *
      */
-    protected function getConsoleApplication(ServiceLocatorInterface $serviceLocator): ConsoleApplication
+    private function getConsoleApplication(ServiceLocatorInterface $serviceLocator): ConsoleApplication
     {
         $shell = $serviceLocator->getService(ShellInterface::class);
 
@@ -55,7 +55,7 @@ class ApplicationFactory implements ServiceFactoryInterface
      * @return HttpApplication
      * @throws ServiceLocatorException
      */
-    protected function getHttpApplication(ServiceLocatorInterface $serviceLocator): HttpApplication
+    private function getHttpApplication(ServiceLocatorInterface $serviceLocator): HttpApplication
     {
         $chain = $serviceLocator->getService(MiddlewareChainInterface::class);
         $request = $serviceLocator->getService(RequestInterface::class);

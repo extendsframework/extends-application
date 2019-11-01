@@ -22,14 +22,14 @@ class ConsoleApplication extends AbstractApplication
      *
      * @var ShellInterface
      */
-    protected $shell;
+    private $shell;
 
     /**
      * Logger.
      *
      * @var LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @inheritDoc
@@ -61,7 +61,7 @@ class ConsoleApplication extends AbstractApplication
      * @return void
      * @throws ConsoleException
      */
-    protected function process(array $arguments): void
+    private function process(array $arguments): void
     {
         $result = $this
             ->getShell()
@@ -69,7 +69,7 @@ class ConsoleApplication extends AbstractApplication
         if ($result instanceof ShellResultInterface) {
             $command = $result->getCommand();
             $parameters = $command->getParameters();
-            if (array_key_exists('task', $parameters) === false) {
+            if (!isset($parameters['task'])) {
                 throw new TaskParameterMissing($command);
             }
 
@@ -96,7 +96,7 @@ class ConsoleApplication extends AbstractApplication
      * @return TaskInterface
      * @throws ServiceLocatorException
      */
-    protected function getTask(string $key): object
+    private function getTask(string $key): object
     {
         return $this
             ->getServiceLocator()
@@ -108,7 +108,7 @@ class ConsoleApplication extends AbstractApplication
      *
      * @return ShellInterface
      */
-    protected function getShell(): ShellInterface
+    private function getShell(): ShellInterface
     {
         return $this->shell;
     }

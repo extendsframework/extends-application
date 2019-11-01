@@ -16,7 +16,7 @@ class RendererMiddleware implements MiddlewareInterface
      *
      * @var RendererInterface
      */
-    protected $renderer;
+    private $renderer;
 
     /**
      * RendererMiddleware constructor.
