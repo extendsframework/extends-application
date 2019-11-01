@@ -3,14 +3,10 @@ declare(strict_types=1);
 
 namespace ExtendsFramework\Application;
 
-use ExtendsFramework\Application\Module\ModuleInterface;
-use ExtendsFramework\Application\Module\Provider\ConditionProviderInterface;
-use ExtendsFramework\Application\Module\Provider\ConfigProviderInterface;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactoryInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
-use LogicException;
 use PHPUnit\Framework\TestCase;
 
 class ApplicationBuilderTest extends TestCase
@@ -20,6 +16,7 @@ class ApplicationBuilderTest extends TestCase
      *
      * Test that builder will load and cache config and build an instance of ApplicationInterface.
      *
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::__construct()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::addConfig()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::addGlobalConfigPath()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setCacheLocation()
@@ -29,20 +26,7 @@ class ApplicationBuilderTest extends TestCase
      * @covers \ExtendsFramework\Application\ApplicationBuilder::addModule()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::build()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getConfig()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getConfigs()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getLoader()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getMerger()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::isCacheEnabled()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getCacheLocation()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getCacheFilename()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getGlobalConfig()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getModuleConfig()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getModules()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setFrameworkEnabled()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::isFrameworkEnabled()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getFrameworkConfigs()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::addFrameworkConfigs()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getServiceLocatorFactory()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::reset()
      */
     public function testBuild(): void
@@ -53,6 +37,12 @@ class ApplicationBuilderTest extends TestCase
         }
 
         $loader = $this->createMock(LoaderInterface::class);
+        $loader
+            ->expects($this->once())
+            ->method('load')
+            ->willReturn([
+                'enabled' => true,
+            ]);
 
         /**
          * @var LoaderInterface                $loader
@@ -81,6 +71,7 @@ class ApplicationBuilderTest extends TestCase
             $this->assertArrayHasKey(MiddlewareChainInterface::class, $config);
             $this->assertArrayHasKey('local', $config);
             $this->assertArrayHasKey('foo', $config);
+            $this->assertArrayHasKey('enabled', $config);
         }
 
         unlink($cacheFile);
@@ -91,17 +82,13 @@ class ApplicationBuilderTest extends TestCase
      *
      * Test that cached config is returned.
      *
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::__construct()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setCacheFilename()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setCacheEnabled()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::setServiceLocatorFactory()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::addModule()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::build()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::getConfig()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getLoader()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::isCacheEnabled()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getCacheLocation()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getCacheFilename()
-     * @covers \ExtendsFramework\Application\ApplicationBuilder::getServiceLocatorFactory()
      * @covers \ExtendsFramework\Application\ApplicationBuilder::reset()
      */
     public function testCached(): void
@@ -146,10 +133,10 @@ class ApplicationBuilderTest extends TestCase
      *
      * Test that an exception is thrown when cache location is missing.
      *
+     * @covers                   \ExtendsFramework\Application\ApplicationBuilder::__construct()
      * @covers                   \ExtendsFramework\Application\ApplicationBuilder::setCacheEnabled()
      * @covers                   \ExtendsFramework\Application\ApplicationBuilder::build()
-     * @covers                   \ExtendsFramework\Application\ApplicationBuilder::isCacheEnabled()
-     * @covers                   \ExtendsFramework\Application\ApplicationBuilder::getCacheLocation()
+     * @covers                   \ExtendsFramework\Application\ApplicationBuilder::getConfig()
      * @covers                   \ExtendsFramework\Application\Exception\CacheLocationMissing::__construct
      * @covers                   \ExtendsFramework\Application\Exception\FailedToLoadCache::__construct
      * @expectedException        \ExtendsFramework\Application\Exception\FailedToLoadCache
@@ -161,63 +148,5 @@ class ApplicationBuilderTest extends TestCase
         $builder
             ->setCacheEnabled(true)
             ->build();
-    }
-}
-
-class ModuleConfigStub implements ModuleInterface, ConfigProviderInterface
-{
-    /**
-     * @var LoaderInterface
-     */
-    protected $loader;
-
-    /**
-     * ModuleStub constructor.
-     *
-     * @param LoaderInterface $loader
-     */
-    public function __construct(LoaderInterface $loader)
-    {
-        $this->loader = $loader;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getConfig(): LoaderInterface
-    {
-        return $this->loader;
-    }
-}
-
-class ModuleConditionedStub implements ModuleInterface, ConfigProviderInterface, ConditionProviderInterface
-{
-    /**
-     * @inheritDoc
-     */
-    public function isConditioned(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getConfig(): LoaderInterface
-    {
-        throw new LogicException('Can not load config from conditioned module.');
-    }
-}
-
-class ConfigLoaderStub implements LoaderInterface
-{
-    /**
-     * @inheritDoc
-     */
-    public function load(): array
-    {
-        return [
-            'global' => false,
-        ];
     }
 }

@@ -41,56 +41,19 @@ abstract class AbstractApplication implements ApplicationInterface
      */
     public function bootstrap(): void
     {
-        $this
-            ->triggerOnStartup()
-            ->run()
-            ->triggerOnShutdown();
-    }
-
-    /**
-     * Trigger startup providers.
-     *
-     * @return AbstractApplication
-     */
-    private function triggerOnStartup(): AbstractApplication
-    {
-        foreach ($this->getModules() as $module) {
+        foreach ($this->modules as $module) {
             if ($module instanceof StartupProviderInterface) {
-                $module->onStartup(
-                    $this->getServiceLocator()
-                );
+                $module->onStartup($this->getServiceLocator());
             }
         }
 
-        return $this;
-    }
+        $this->run();
 
-    /**
-     * Trigger shutdown providers.
-     *
-     * @return AbstractApplication
-     */
-    private function triggerOnShutdown(): AbstractApplication
-    {
-        foreach ($this->getModules() as $module) {
+        foreach ($this->modules as $module) {
             if ($module instanceof ShutdownProviderInterface) {
-                $module->onShutdown(
-                    $this->getServiceLocator()
-                );
+                $module->onShutdown($this->getServiceLocator());
             }
         }
-
-        return $this;
-    }
-
-    /**
-     * Get modules.
-     *
-     * @return ModuleInterface[]
-     */
-    private function getModules(): array
-    {
-        return $this->modules;
     }
 
     /**

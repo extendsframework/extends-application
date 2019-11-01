@@ -18,10 +18,7 @@ class AbstractApplicationTest extends TestCase
      *
      * @covers \ExtendsFramework\Application\AbstractApplication::__construct()
      * @covers \ExtendsFramework\Application\AbstractApplication::bootstrap()
-     * @covers \ExtendsFramework\Application\AbstractApplication::triggerOnStartup()
-     * @covers \ExtendsFramework\Application\AbstractApplication::triggerOnShutdown()
      * @covers \ExtendsFramework\Application\AbstractApplication::getServiceLocator()
-     * @covers \ExtendsFramework\Application\AbstractApplication::getModules()
      */
     public function testBootstrap(): void
     {

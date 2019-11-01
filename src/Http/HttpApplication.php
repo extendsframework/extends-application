@@ -5,6 +5,7 @@ namespace ExtendsFramework\Application\Http;
 
 use ExtendsFramework\Application\AbstractApplication;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
+use ExtendsFramework\Http\Middleware\MiddlewareException;
 use ExtendsFramework\Http\Request\RequestInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 
@@ -41,35 +42,12 @@ class HttpApplication extends AbstractApplication
 
     /**
      * @inheritDoc
+     * @throws MiddlewareException
      */
     protected function run(): AbstractApplication
     {
-        $this
-            ->getChain()
-            ->proceed(
-                $this->getRequest()
-            );
+        $this->chain->proceed($this->request);
 
         return $this;
-    }
-
-    /**
-     * Get middleware chain.
-     *
-     * @return MiddlewareChainInterface
-     */
-    private function getChain(): MiddlewareChainInterface
-    {
-        return $this->chain;
-    }
-
-    /**
-     * Get request.
-     *
-     * @return RequestInterface
-     */
-    private function getRequest(): RequestInterface
-    {
-        return $this->request;
     }
 }

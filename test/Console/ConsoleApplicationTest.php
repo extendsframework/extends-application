@@ -23,9 +23,6 @@ class ConsoleApplicationTest extends TestCase
      *
      * @covers \ExtendsFramework\Application\Console\ConsoleApplication::__construct()
      * @covers \ExtendsFramework\Application\Console\ConsoleApplication::run()
-     * @covers \ExtendsFramework\Application\Console\ConsoleApplication::getShell()
-     * @covers \ExtendsFramework\Application\Console\ConsoleApplication::process()
-     * @covers \ExtendsFramework\Application\Console\ConsoleApplication::getTask()
      */
     public function testRun(): void
     {
@@ -94,8 +91,6 @@ class ConsoleApplicationTest extends TestCase
      *
      * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::__construct()
      * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::run()
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::getShell()
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::process()
      * @covers                   \ExtendsFramework\Application\Console\Exception\TaskParameterMissing::__construct()
      * @expectedException        \ExtendsFramework\Application\Console\Exception\TaskParameterMissing
      * @expectedExceptionMessage Task parameter not defined for command "do.task".
@@ -150,9 +145,6 @@ class ConsoleApplicationTest extends TestCase
      *
      * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::__construct()
      * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::run()
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::getShell()
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::process()
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::getTask()
      * @covers                   \ExtendsFramework\Application\Console\Exception\TaskNotFound::__construct()
      * @expectedException        \ExtendsFramework\Application\Console\Exception\TaskNotFound
      * @expectedExceptionMessage
@@ -209,9 +201,6 @@ class ConsoleApplicationTest extends TestCase
      *
      * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::__construct()
      * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::run()
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::getShell()
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::process()
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::getTask()
      * @covers                   \ExtendsFramework\Application\Console\Exception\TaskExecuteFailed::__construct()
      * @expectedException        \ExtendsFramework\Application\Console\Exception\TaskExecuteFailed
      * @expectedExceptionMessage Failed to execute task for command "do.task", see previous exception for more details.

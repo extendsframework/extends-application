@@ -7,7 +7,6 @@ use ExtendsFramework\Application\AbstractApplication;
 use ExtendsFramework\Application\Console\Exception\TaskExecuteFailed;
 use ExtendsFramework\Application\Console\Exception\TaskNotFound;
 use ExtendsFramework\Application\Console\Exception\TaskParameterMissing;
-use ExtendsFramework\Logger\LoggerInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorException;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 use ExtendsFramework\Shell\ShellInterface;
@@ -25,20 +24,10 @@ class ConsoleApplication extends AbstractApplication
     private $shell;
 
     /**
-     * Logger.
-     *
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @inheritDoc
      */
-    public function __construct(
-        ShellInterface $shell,
-        ServiceLocatorInterface $serviceLocator,
-        array $modules
-    ) {
+    public function __construct(ShellInterface $shell, ServiceLocatorInterface $serviceLocator, array $modules)
+    {
         parent::__construct($serviceLocator, $modules);
 
         $this->shell = $shell;
@@ -46,26 +35,11 @@ class ConsoleApplication extends AbstractApplication
 
     /**
      * @inheritDoc
+     * @throws ConsoleException
      */
     protected function run(): AbstractApplication
     {
-        $this->process(array_slice($GLOBALS['argv'], 1));
-
-        return $this;
-    }
-
-    /**
-     * Process $arguments and return task result.
-     *
-     * @param array $arguments
-     * @return void
-     * @throws ConsoleException
-     */
-    private function process(array $arguments): void
-    {
-        $result = $this
-            ->getShell()
-            ->process($arguments);
+        $result = $this->shell->process(array_slice($GLOBALS['argv'], 1));
         if ($result instanceof ShellResultInterface) {
             $command = $result->getCommand();
             $parameters = $command->getParameters();
@@ -74,42 +48,21 @@ class ConsoleApplication extends AbstractApplication
             }
 
             try {
-                $task = $this->getTask($parameters['task']);
+                /** @var TaskInterface $task */
+                $task = $this
+                    ->getServiceLocator()
+                    ->getService($parameters['task']);
             } catch (ServiceLocatorException $exception) {
                 throw new TaskNotFound($command, $exception);
             }
 
             try {
-                $task->execute(
-                    $result->getData()
-                );
+                $task->execute($result->getData());
             } catch (TaskException $exception) {
                 throw new TaskExecuteFailed($command, $exception);
             }
         }
-    }
 
-    /**
-     * Get task for $key from service locator.
-     *
-     * @param string $key
-     * @return TaskInterface
-     * @throws ServiceLocatorException
-     */
-    private function getTask(string $key): object
-    {
-        return $this
-            ->getServiceLocator()
-            ->getService($key);
-    }
-
-    /**
-     * Get shell.
-     *
-     * @return ShellInterface
-     */
-    private function getShell(): ShellInterface
-    {
-        return $this->shell;
+        return $this;
     }
 }

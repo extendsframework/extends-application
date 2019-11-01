@@ -27,6 +27,7 @@ use ExtendsFramework\ServiceLocator\Config\Loader\Cache\CacheLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\File\FileLoader;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderException;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
+use ExtendsFramework\ServiceLocator\ServiceLocatorException;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactory;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactoryInterface;
 use ExtendsFramework\Shell\Framework\ServiceLocator\Loader\ShellConfigLoader;
@@ -129,7 +130,16 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     ];
 
     /**
+     * ApplicationBuilder constructor.
+     */
+    public function __construct()
+    {
+        $this->reset();
+    }
+
+    /**
      * @inheritDoc
+     * @throws ServiceLocatorException
      */
     public function build(): ApplicationInterface
     {
@@ -139,8 +149,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
             throw new FailedToLoadCache($exception);
         }
 
-        $application = $this
-            ->getServiceLocatorFactory()
+        $application = ($this->factory ?: new ServiceLocatorFactory())
             ->create($config)
             ->getService(ApplicationInterface::class, [
                 'modules' => $this->modules,
@@ -159,7 +168,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      *
      * All the added global config paths will be merged in chronological order.
      *
-     * @param string[] ...$globalConfigPaths
+     * @param string ...$globalConfigPaths
      * @return ApplicationBuilder
      */
     public function addGlobalConfigPath(string ...$globalConfigPaths): ApplicationBuilder
@@ -211,14 +220,14 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     /**
      * Set cache enabled.
      *
-     * Cache is disabled by default. Default value is true.
+     * Cache is disabled by default.
      *
      * @param bool $cacheEnabled
      * @return ApplicationBuilder
      */
-    public function setCacheEnabled(bool $cacheEnabled = null): ApplicationBuilder
+    public function setCacheEnabled(bool $cacheEnabled): ApplicationBuilder
     {
-        $this->cacheEnabled = $cacheEnabled ?? true;
+        $this->cacheEnabled = $cacheEnabled;
 
         return $this;
     }
@@ -226,14 +235,14 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     /**
      * Set framework enabled.
      *
-     * Framework is enabled by default. Default value is true.
+     * Framework is enabled by default.
      *
      * @param bool $frameworkEnabled
      * @return ApplicationBuilder
      */
-    public function setFrameworkEnabled(bool $frameworkEnabled = null): ApplicationBuilder
+    public function setFrameworkEnabled(bool $frameworkEnabled): ApplicationBuilder
     {
-        $this->frameworkEnabled = $frameworkEnabled ?? true;
+        $this->frameworkEnabled = $frameworkEnabled;
 
         return $this;
     }
@@ -241,7 +250,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     /**
      * Add module.
      *
-     * @param ModuleInterface[] ...$modules
+     * @param ModuleInterface ...$modules
      * @return ApplicationBuilder
      */
     public function addModule(ModuleInterface ...$modules): ApplicationBuilder
@@ -276,224 +285,71 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      */
     private function getConfig(): array
     {
-        $loader = null;
-        if ($this->isCacheEnabled()) {
-            $loader = $this->getLoader();
-            $cached = $loader->load();
+        if ($this->cacheEnabled) {
+            if ($this->loader === null) {
+                if ($this->cacheLocation === null) {
+                    throw new CacheLocationMissing();
+                }
+
+                $this->loader = new CacheLoader(sprintf(
+                    '%s/%s.php',
+                    rtrim($this->cacheLocation, '/'),
+                    $this->cacheFilename
+                ));
+            }
+
+            $cached = $this->loader->load();
             if (!empty($cached)) {
                 return $cached;
             }
         }
 
-        if ($this->isFrameworkEnabled()) {
-            $this->addFrameworkConfigs();
+        if ($this->frameworkEnabled) {
+            foreach ($this->frameworkConfigs as $frameworkConfig) {
+                $frameworkConfig = new $frameworkConfig;
+                if ($frameworkConfig instanceof LoaderInterface) {
+                    $this->addConfig($frameworkConfig);
+                }
+            }
         }
 
         $merged = [];
-        $merger = $this->getMerger();
-        foreach ($this->getConfigs() as $config) {
-            $merged = $merger->merge(
+        foreach ($this->configs as $config) {
+            $merged = $this->merger->merge(
                 $merged,
                 $config->load()
             );
         }
 
-        foreach ($this->getGlobalConfig() as $global) {
-            $merged = $merger->merge($merged, $global);
+        $fileLoader = new FileLoader();
+        foreach ($this->globalConfigPaths as $path) {
+            $fileLoader->addPath($path);
         }
 
-        foreach ($this->getModuleConfig() as $module) {
-            $merged = $merger->merge($merged, $module);
+        foreach ($fileLoader->load() as $global) {
+            $merged = $this->merger->merge($merged, $global);
         }
 
-        if ($loader instanceof CacheLoader && $this->isCacheEnabled()) {
-            $loader->save($merged);
-        }
-
-        return $merged;
-    }
-
-    /**
-     * Add framework configs.
-     *
-     * @return ApplicationBuilder
-     */
-    private function addFrameworkConfigs(): ApplicationBuilder
-    {
-        foreach ($this->getFrameworkConfigs() as $loader) {
-            $loader = new $loader;
-            if ($loader instanceof LoaderInterface) {
-                $this->addConfig($loader);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get config from modules.
-     *
-     * @return array
-     * @throws LoaderException
-     * @throws MergerException
-     */
-    private function getModuleConfig(): array
-    {
-        $merged = [];
-        $merger = $this->getMerger();
-        foreach ($this->getModules() as $module) {
+        foreach ($this->modules as $module) {
             if ($module instanceof ConditionProviderInterface && $module->isConditioned()) {
                 continue;
             }
 
             if ($module instanceof ConfigProviderInterface) {
-                $merged = $merger->merge(
+                $merged = $this->merger->merge(
                     $merged,
-                    $module->getConfig()
+                    $module
+                        ->getConfig()
                         ->load()
                 );
             }
         }
 
+        if ($this->loader instanceof CacheLoader && $this->cacheEnabled) {
+            $this->loader->save($merged);
+        }
+
         return $merged;
-    }
-
-    /**
-     * Get global config.
-     *
-     * @return array
-     * @throws LoaderException
-     */
-    private function getGlobalConfig(): array
-    {
-        $loader = new FileLoader();
-        foreach ($this->globalConfigPaths as $path) {
-            $loader->addPath($path);
-        }
-
-        return $loader->load();
-    }
-
-    /**
-     * Get config loaders.
-     *
-     * @return LoaderInterface[]
-     */
-    private function getConfigs(): array
-    {
-        return $this->configs;
-    }
-
-    /**
-     * Get cache location.
-     *
-     * @return string
-     * @throws ApplicationBuilderException
-     */
-    private function getCacheLocation(): string
-    {
-        if ($this->cacheLocation === null) {
-            throw new CacheLocationMissing();
-        }
-
-        return $this->cacheLocation;
-    }
-
-    /**
-     * Get cache filename without extension.
-     *
-     * @return string
-     */
-    private function getCacheFilename(): string
-    {
-        return $this->cacheFilename ?? 'config.cache';
-    }
-
-    /**
-     * Get framework configs.
-     *
-     * @return LoaderInterface[]
-     */
-    private function getFrameworkConfigs(): array
-    {
-        return $this->frameworkConfigs;
-    }
-
-    /**
-     * Get cache enabled.
-     *
-     * @return bool
-     */
-    private function isCacheEnabled(): bool
-    {
-        return $this->cacheEnabled ?? false;
-    }
-
-    /**
-     * If framework is enabled.
-     *
-     * @return bool
-     */
-    private function isFrameworkEnabled(): bool
-    {
-        return $this->frameworkEnabled;
-    }
-
-    /**
-     * Get enabled modules.
-     *
-     * @return ModuleInterface[]
-     */
-    private function getModules(): array
-    {
-        return $this->modules;
-    }
-
-    /**
-     * Get service locator factory.
-     *
-     * @return ServiceLocatorFactoryInterface
-     */
-    private function getServiceLocatorFactory(): ServiceLocatorFactoryInterface
-    {
-        if (!$this->factory instanceof ServiceLocatorFactoryInterface) {
-            $this->factory = new ServiceLocatorFactory();
-        }
-
-        return $this->factory ?: new ServiceLocatorFactory();
-    }
-
-    /**
-     * Get global config loader.
-     *
-     * @return LoaderInterface
-     * @throws ApplicationBuilderException
-     */
-    private function getLoader(): LoaderInterface
-    {
-        if (!$this->loader instanceof LoaderInterface) {
-            $this->loader = new CacheLoader(sprintf(
-                '%s/%s.php',
-                rtrim($this->getCacheLocation(), '/'),
-                $this->getCacheFilename()
-            ));
-        }
-
-        return $this->loader;
-    }
-
-    /**
-     * Get config merger.
-     *
-     * @return MergerInterface
-     */
-    private function getMerger(): MergerInterface
-    {
-        if (!$this->merger instanceof MergerInterface) {
-            $this->merger = new RecursiveMerger();
-        }
-
-        return $this->merger;
     }
 
     /**
@@ -504,12 +360,12 @@ class ApplicationBuilder implements ApplicationBuilderInterface
         $this->frameworkEnabled = true;
         $this->globalConfigPaths = [];
         $this->cacheLocation = null;
-        $this->cacheFilename = null;
-        $this->cacheEnabled = null;
+        $this->cacheFilename = 'config.cache';
+        $this->cacheEnabled = false;
         $this->modules = [];
         $this->configs = [];
         $this->loader = null;
-        $this->merger = null;
+        $this->merger = new RecursiveMerger();
         $this->factory = null;
     }
 }

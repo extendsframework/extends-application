@@ -16,9 +16,11 @@ class ApplicationFactory implements ServiceFactoryInterface
 {
     /**
      * @inheritDoc
+     * @throws ServiceLocatorException
      */
     public function createService(string $key, ServiceLocatorInterface $serviceLocator, array $extra = null): object
     {
+        /** @noinspection ConstantCanBeUsedInspection */
         if (php_sapi_name() === 'cli') {
             return $this->getConsoleApplication($serviceLocator);
         }
@@ -32,20 +34,13 @@ class ApplicationFactory implements ServiceFactoryInterface
      * @param ServiceLocatorInterface $serviceLocator
      * @return ConsoleApplication
      * @throws ServiceLocatorException
-     *
      */
     private function getConsoleApplication(ServiceLocatorInterface $serviceLocator): ConsoleApplication
     {
         $shell = $serviceLocator->getService(ShellInterface::class);
 
-        /**
-         * @var ShellInterface $shell
-         */
-        return new ConsoleApplication(
-            $shell,
-            $serviceLocator,
-            $extra['modules'] ?? []
-        );
+        /** @noinspection PhpParamsInspection */
+        return new ConsoleApplication($shell, $serviceLocator, $extra['modules'] ?? []);
     }
 
     /**
@@ -60,15 +55,7 @@ class ApplicationFactory implements ServiceFactoryInterface
         $chain = $serviceLocator->getService(MiddlewareChainInterface::class);
         $request = $serviceLocator->getService(RequestInterface::class);
 
-        /**
-         * @var MiddlewareChainInterface $chain
-         * @var RequestInterface         $request
-         */
-        return new HttpApplication(
-            $chain,
-            $request,
-            $serviceLocator,
-            $extra['modules'] ?? []
-        );
+        /** @noinspection PhpParamsInspection */
+        return new HttpApplication($chain, $request, $serviceLocator, $extra['modules'] ?? []);
     }
 }

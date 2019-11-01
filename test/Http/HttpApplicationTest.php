@@ -17,8 +17,6 @@ class HttpApplicationTest extends TestCase
      *
      * @covers \ExtendsFramework\Application\Http\HttpApplication::__construct()
      * @covers \ExtendsFramework\Application\Http\HttpApplication::run()
-     * @covers \ExtendsFramework\Application\Http\HttpApplication::getRequest()
-     * @covers \ExtendsFramework\Application\Http\HttpApplication::getChain()
      */
     public function testRun(): void
     {
