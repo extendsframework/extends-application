@@ -65,7 +65,7 @@ class ExceptionMiddlewareTest extends TestCase
         $middleware = new ExceptionMiddleware();
         $response = $middleware->process($request, $chain);
 
-        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertIsObject($response);
         if ($response instanceof ResponseInterface) {
             $this->assertSame(500, $response->getStatusCode());
             $this->assertSame([

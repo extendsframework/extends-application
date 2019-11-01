@@ -83,27 +83,10 @@ class ApplicationFactoryTest extends TestCase
     }
 }
 
-class Buffer
-{
-    protected static $sapi;
-
-    public static function getSapi(): string
-    {
-        return static::$sapi ?: 'cli';
-    }
-
-    public static function setSapi(string $sapi): void
-    {
-        static::$sapi = $sapi;
-    }
-
-    public static function reset(): void
-    {
-        static::$sapi = null;
-    }
-}
-
-function php_sapi_name()
+/**
+ * @return string
+ */
+function php_sapi_name(): string
 {
     return Buffer::getSapi();
 }

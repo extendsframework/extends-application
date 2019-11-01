@@ -132,44 +132,17 @@ class JsonRendererTest extends TestCase
     }
 }
 
-class Buffer
-{
-    protected static $headers = [];
-
-    protected static $code;
-
-    public static function getHeaders(): array
-    {
-        return self::$headers;
-    }
-
-    public static function getCode(): int
-    {
-        return self::$code;
-    }
-
-    public static function addHeader(string $header): void
-    {
-        self::$headers[] = $header;
-    }
-
-    public static function setCode($code): void
-    {
-        self::$code = $code;
-    }
-
-    public static function reset(): void
-    {
-        static::$headers = [];
-        static::$code = null;
-    }
-}
-
+/**
+ * @param $header
+ */
 function header($header)
 {
     Buffer::addHeader($header);
 }
 
+/**
+ * @param $code
+ */
 function http_response_code($code)
 {
     Buffer::setCode($code);

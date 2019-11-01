@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace ExtendsFramework\Application\Console;
 
-use Exception;
-use ExtendsFramework\ServiceLocator\ServiceLocatorException;
+use ExtendsFramework\Application\Console\Exception\TaskExecuteFailed;
+use ExtendsFramework\Application\Console\Exception\TaskNotFound;
+use ExtendsFramework\Application\Console\Exception\TaskParameterMissing;
 use ExtendsFramework\ServiceLocator\ServiceLocatorInterface;
 use ExtendsFramework\Shell\Command\CommandInterface;
 use ExtendsFramework\Shell\ShellInterface;
 use ExtendsFramework\Shell\ShellResultInterface;
-use ExtendsFramework\Shell\Task\TaskException;
 use ExtendsFramework\Shell\Task\TaskInterface;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -89,14 +89,15 @@ class ConsoleApplicationTest extends TestCase
      *
      * Test that an exception will be thrown when task parameter is missing in command.
      *
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::__construct()
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::run()
-     * @covers                   \ExtendsFramework\Application\Console\Exception\TaskParameterMissing::__construct()
-     * @expectedException        \ExtendsFramework\Application\Console\Exception\TaskParameterMissing
-     * @expectedExceptionMessage Task parameter not defined for command "do.task".
+     * @covers \ExtendsFramework\Application\Console\ConsoleApplication::__construct()
+     * @covers \ExtendsFramework\Application\Console\ConsoleApplication::run()
+     * @covers \ExtendsFramework\Application\Console\Exception\TaskParameterMissing::__construct()
      */
     public function testTaskParameterMissing(): void
     {
+        $this->expectException(TaskParameterMissing::class);
+        $this->expectExceptionMessage('Task parameter not defined for command "do.task".');
+
         $GLOBALS['argv'] = [
             'test.php',
             'do.task',
@@ -143,14 +144,17 @@ class ConsoleApplicationTest extends TestCase
      *
      * Test that an exception will be thrown when task can not be found by service locator.
      *
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::__construct()
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::run()
-     * @covers                   \ExtendsFramework\Application\Console\Exception\TaskNotFound::__construct()
-     * @expectedException        \ExtendsFramework\Application\Console\Exception\TaskNotFound
-     * @expectedExceptionMessage
+     * @covers \ExtendsFramework\Application\Console\ConsoleApplication::__construct()
+     * @covers \ExtendsFramework\Application\Console\ConsoleApplication::run()
+     * @covers \ExtendsFramework\Application\Console\Exception\TaskNotFound::__construct()
      */
     public function testTaskNotFound(): void
     {
+        $this->expectException(TaskNotFound::class);
+        $this->expectExceptionMessage(
+            'Task for command "do.task" can not be found, see previous exception for more details.'
+        );
+
         $GLOBALS['argv'] = [
             'test.php',
             'do.task',
@@ -163,6 +167,11 @@ class ConsoleApplicationTest extends TestCase
             ->willReturn([
                 'task' => stdClass::class,
             ]);
+
+        $command
+            ->expects($this->once())
+            ->method('getName')
+            ->willReturn('do.task');
 
         $result = $this->createMock(ShellResultInterface::class);
         $result
@@ -199,14 +208,17 @@ class ConsoleApplicationTest extends TestCase
      *
      * Test that an exception will be thrown when task execution fails.
      *
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::__construct()
-     * @covers                   \ExtendsFramework\Application\Console\ConsoleApplication::run()
-     * @covers                   \ExtendsFramework\Application\Console\Exception\TaskExecuteFailed::__construct()
-     * @expectedException        \ExtendsFramework\Application\Console\Exception\TaskExecuteFailed
-     * @expectedExceptionMessage Failed to execute task for command "do.task", see previous exception for more details.
+     * @covers \ExtendsFramework\Application\Console\ConsoleApplication::__construct()
+     * @covers \ExtendsFramework\Application\Console\ConsoleApplication::run()
+     * @covers \ExtendsFramework\Application\Console\Exception\TaskExecuteFailed::__construct()
      */
     public function testTaskExecuteFailed(): void
     {
+        $this->expectException(TaskExecuteFailed::class);
+        $this->expectExceptionMessage(
+            'Failed to execute task for command "do.task", see previous exception for more details.'
+        );
+
         $GLOBALS['argv'] = [
             'test.php',
             'do.task',
@@ -269,12 +281,4 @@ class ConsoleApplicationTest extends TestCase
         $terminal = new ConsoleApplication($shell, $serviceLocator, []);
         $terminal->bootstrap();
     }
-}
-
-class TaskExceptionStub extends Exception implements TaskException
-{
-}
-
-class ServiceLocatorExceptionStub extends Exception implements ServiceLocatorException
-{
 }

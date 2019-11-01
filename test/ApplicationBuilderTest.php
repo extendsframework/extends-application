@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ExtendsFramework\Application;
 
+use ExtendsFramework\Application\Exception\FailedToLoadCache;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
 use ExtendsFramework\ServiceLocator\ServiceLocatorFactoryInterface;
@@ -61,7 +62,7 @@ class ApplicationBuilderTest extends TestCase
             ->addModule(new ModuleConditionedStub())
             ->build();
 
-        $this->assertInstanceOf(ApplicationInterface::class, $application);
+        $this->assertIsObject($application);
 
         $file = __DIR__ . '/config/application.cache.php';
         if (file_exists($file)) {
@@ -125,7 +126,7 @@ class ApplicationBuilderTest extends TestCase
             ->addModule(new ModuleConditionedStub())
             ->build();
 
-        $this->assertInstanceOf(ApplicationInterface::class, $application);
+        $this->assertIsObject($application);
     }
 
     /**
@@ -133,17 +134,18 @@ class ApplicationBuilderTest extends TestCase
      *
      * Test that an exception is thrown when cache location is missing.
      *
-     * @covers                   \ExtendsFramework\Application\ApplicationBuilder::__construct()
-     * @covers                   \ExtendsFramework\Application\ApplicationBuilder::setCacheEnabled()
-     * @covers                   \ExtendsFramework\Application\ApplicationBuilder::build()
-     * @covers                   \ExtendsFramework\Application\ApplicationBuilder::getConfig()
-     * @covers                   \ExtendsFramework\Application\Exception\CacheLocationMissing::__construct
-     * @covers                   \ExtendsFramework\Application\Exception\FailedToLoadCache::__construct
-     * @expectedException        \ExtendsFramework\Application\Exception\FailedToLoadCache
-     * @expectedExceptionMessage Failed to load config. See previous exception for more details.
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::__construct()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::setCacheEnabled()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::build()
+     * @covers \ExtendsFramework\Application\ApplicationBuilder::getConfig()
+     * @covers \ExtendsFramework\Application\Exception\CacheLocationMissing::__construct
+     * @covers \ExtendsFramework\Application\Exception\FailedToLoadCache::__construct
      */
     public function testCacheLocationMissing(): void
     {
+        $this->expectException(FailedToLoadCache::class);
+        $this->expectExceptionMessage('Failed to load config. See previous exception for more details.');
+
         $builder = new ApplicationBuilder();
         $builder
             ->setCacheEnabled(true)
