@@ -174,7 +174,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
     /**
      * Add config loader.
      *
-     * @param LoaderInterface[] ...$loaders
+     * @param LoaderInterface ...$loaders
      * @return ApplicationBuilder
      */
     public function addConfig(LoaderInterface ...$loaders): ApplicationBuilder
@@ -306,10 +306,8 @@ class ApplicationBuilder implements ApplicationBuilderInterface
             $merged = $merger->merge($merged, $module);
         }
 
-        if ($this->isCacheEnabled()) {
-            if ($loader instanceof CacheLoader) {
-                $loader->save($merged);
-            }
+        if ($loader instanceof CacheLoader && $this->isCacheEnabled()) {
+            $loader->save($merged);
         }
 
         return $merged;
@@ -351,7 +349,8 @@ class ApplicationBuilder implements ApplicationBuilderInterface
             if ($module instanceof ConfigProviderInterface) {
                 $merged = $merger->merge(
                     $merged,
-                    $module->getConfig()->load()
+                    $module->getConfig()
+                        ->load()
                 );
             }
         }
@@ -457,7 +456,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      */
     private function getServiceLocatorFactory(): ServiceLocatorFactoryInterface
     {
-        if (! $this->factory instanceof ServiceLocatorFactoryInterface) {
+        if (!$this->factory instanceof ServiceLocatorFactoryInterface) {
             $this->factory = new ServiceLocatorFactory();
         }
 
@@ -472,7 +471,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      */
     private function getLoader(): LoaderInterface
     {
-        if (! $this->loader instanceof LoaderInterface) {
+        if (!$this->loader instanceof LoaderInterface) {
             $this->loader = new CacheLoader(sprintf(
                 '%s/%s.php',
                 rtrim($this->getCacheLocation(), '/'),
@@ -490,7 +489,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
      */
     private function getMerger(): MergerInterface
     {
-        if (! $this->merger instanceof MergerInterface) {
+        if (!$this->merger instanceof MergerInterface) {
             $this->merger = new RecursiveMerger();
         }
 
