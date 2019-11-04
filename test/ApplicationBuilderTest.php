@@ -42,7 +42,9 @@ class ApplicationBuilderTest extends TestCase
             ->expects($this->once())
             ->method('load')
             ->willReturn([
-                'enabled' => true,
+                [
+                    'enabled' => true,
+                ],
             ]);
 
         /**

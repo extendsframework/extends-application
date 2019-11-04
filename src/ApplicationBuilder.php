@@ -336,12 +336,14 @@ class ApplicationBuilder implements ApplicationBuilderInterface
             }
 
             if ($module instanceof ConfigProviderInterface) {
-                $merged = $this->merger->merge(
-                    $merged,
-                    $module
-                        ->getConfig()
-                        ->load()
-                );
+                foreach ($module
+                             ->getConfig()
+                             ->load() as $loaded) {
+                    $merged = $this->merger->merge(
+                        $merged,
+                        $loaded
+                    );
+                }
             }
         }
 
