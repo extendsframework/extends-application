@@ -37,10 +37,12 @@ class ApplicationFactory implements ServiceFactoryInterface
      */
     private function getConsoleApplication(ServiceLocatorInterface $serviceLocator): ConsoleApplication
     {
-        $shell = $serviceLocator->getService(ShellInterface::class);
-
         /** @noinspection PhpParamsInspection */
-        return new ConsoleApplication($shell, $serviceLocator, $extra['modules'] ?? []);
+        return new ConsoleApplication(
+            $serviceLocator->getService(ShellInterface::class),
+            $serviceLocator,
+            $extra['modules'] ?? []
+        );
     }
 
     /**
@@ -52,10 +54,12 @@ class ApplicationFactory implements ServiceFactoryInterface
      */
     private function getHttpApplication(ServiceLocatorInterface $serviceLocator): HttpApplication
     {
-        $chain = $serviceLocator->getService(MiddlewareChainInterface::class);
-        $request = $serviceLocator->getService(RequestInterface::class);
-
         /** @noinspection PhpParamsInspection */
-        return new HttpApplication($chain, $request, $serviceLocator, $extra['modules'] ?? []);
+        return new HttpApplication(
+            $serviceLocator->getService(MiddlewareChainInterface::class),
+            $serviceLocator->getService(RequestInterface::class),
+            $serviceLocator,
+            $extra['modules'] ?? []
+        );
     }
 }
