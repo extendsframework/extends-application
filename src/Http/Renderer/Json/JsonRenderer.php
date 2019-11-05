@@ -20,7 +20,7 @@ class JsonRenderer implements RendererInterface
             $body = json_encode($body, JSON_PARTIAL_OUTPUT_ON_ERROR);
         }
 
-        $response
+        $response = $response
             ->andHeader('Content-Type', 'application/json')
             ->andHeader('Content-Length', (string)strlen($body));
 
