@@ -16,6 +16,7 @@ use ExtendsFramework\Console\Framework\ServiceLocator\Loader\ConsoleConfigLoader
 use ExtendsFramework\Event\Framework\ServiceLocator\Loader\EventConfigLoader;
 use ExtendsFramework\Http\Framework\ServiceLocator\Loader\HttpConfigLoader;
 use ExtendsFramework\Identity\Framework\ServiceLocator\Loader\IdentityConfigLoader;
+use ExtendsFramework\JsonApi\Framework\ServiceLocator\Loader\JsonApiConfigLoader;
 use ExtendsFramework\Logger\Framework\ServiceLocator\Loader\LoggerConfigLoader;
 use ExtendsFramework\Merger\MergerException;
 use ExtendsFramework\Merger\MergerInterface;
@@ -127,6 +128,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
         CommandConfigLoader::class,
         EventConfigLoader::class,
         SourcingConfigLoader::class,
+        JsonApiConfigLoader::class,
     ];
 
     /**

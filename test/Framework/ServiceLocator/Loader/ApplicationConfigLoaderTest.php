@@ -13,6 +13,7 @@ use ExtendsFramework\Application\Http\Renderer\RendererInterface;
 use ExtendsFramework\Authentication\Framework\Http\Middleware\NotAuthenticatedMiddleware;
 use ExtendsFramework\Authorization\Framework\Http\Middleware\NotAuthorizedMiddleware;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
+use ExtendsFramework\JsonApi\Framework\Http\Middleware\JsonApiMiddleware;
 use ExtendsFramework\Logger\Framework\Http\Middleware\Logger\LoggerMiddleware;
 use ExtendsFramework\Router\Framework\Http\Middleware\Controller\ControllerMiddleware;
 use ExtendsFramework\Router\Framework\Http\Middleware\Router\RouterMiddleware;
@@ -51,9 +52,10 @@ class ApplicationConfigLoaderTest extends TestCase
                 ],
             ],
             MiddlewareChainInterface::class => [
-                RendererMiddleware::class => 900,
-                ExceptionMiddleware::class => 800,
-                LoggerMiddleware::class => 700,
+                RendererMiddleware::class => 1000,
+                ExceptionMiddleware::class => 900,
+                LoggerMiddleware::class => 800,
+                JsonApiMiddleware::class => 700,
                 RouterMiddleware::class => 600,
                 NotAuthorizedMiddleware::class => 500,
                 NotAuthenticatedMiddleware::class => 400,
