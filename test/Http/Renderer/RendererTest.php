@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace ExtendsFramework\Application\Http\Renderer\Json;
+namespace ExtendsFramework\Application\Http\Renderer;
 
 use ExtendsFramework\Http\Response\ResponseInterface;
 use PHPUnit\Framework\TestCase;
 
-class JsonRendererTest extends TestCase
+class RendererTest extends TestCase
 {
     /**
      * Render.
      *
      * Test that response will be rendered: headers sent, body encoded and HTTP status code set.
      *
-     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::render()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Renderer::render()
      */
     public function testRender(): void
     {
@@ -23,9 +23,7 @@ class JsonRendererTest extends TestCase
         $response
             ->expects($this->once())
             ->method('getBody')
-            ->willReturn([
-                'foo' => 'bar',
-            ]);
+            ->willReturn('{"foo":"bar"}');
 
         $response
             ->expects($this->exactly(2))
@@ -58,7 +56,7 @@ class JsonRendererTest extends TestCase
         /**
          * @var ResponseInterface $response
          */
-        $renderer = new JsonRenderer();
+        $renderer = new Renderer();
 
         ob_start();
         $renderer->render($response);
@@ -78,7 +76,7 @@ class JsonRendererTest extends TestCase
      *
      * Test that no body will be send.
      *
-     * @covers \ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer::render()
+     * @covers \ExtendsFramework\Application\Http\Renderer\Renderer::render()
      */
     public function testEmptyBody(): void
     {
@@ -116,7 +114,7 @@ class JsonRendererTest extends TestCase
         /**
          * @var ResponseInterface $response
          */
-        $renderer = new JsonRenderer();
+        $renderer = new Renderer();
 
         ob_start();
         $renderer->render($response);

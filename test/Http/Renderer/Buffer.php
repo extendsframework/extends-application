@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ExtendsFramework\Application\Http\Renderer\Json;
+namespace ExtendsFramework\Application\Http\Renderer;
 
 class Buffer
 {

@@ -8,7 +8,7 @@ use ExtendsFramework\Application\Framework\Http\Middleware\ExceptionMiddleware;
 use ExtendsFramework\Application\Framework\Http\Middleware\NotImplementedMiddleware;
 use ExtendsFramework\Application\Framework\Http\Middleware\RendererMiddleware;
 use ExtendsFramework\Application\Framework\ServiceLocator\Factory\ApplicationFactory;
-use ExtendsFramework\Application\Http\Renderer\Json\JsonRenderer;
+use ExtendsFramework\Application\Http\Renderer\Renderer;
 use ExtendsFramework\Application\Http\Renderer\RendererInterface;
 use ExtendsFramework\Authentication\Framework\Http\Middleware\NotAuthenticatedMiddleware;
 use ExtendsFramework\Authorization\Framework\Http\Middleware\NotAuthorizedMiddleware;
@@ -39,7 +39,7 @@ class ApplicationConfigLoader implements LoaderInterface
                 InvokableResolver::class => [
                     NotImplementedMiddleware::class => NotImplementedMiddleware::class,
                     ExceptionMiddleware::class => ExceptionMiddleware::class,
-                    RendererInterface::class => JsonRenderer::class,
+                    RendererInterface::class => Renderer::class,
                 ],
                 ReflectionResolver::class => [
                     RendererMiddleware::class => RendererMiddleware::class,

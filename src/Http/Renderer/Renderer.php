@@ -1,25 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace ExtendsFramework\Application\Http\Renderer\Json;
+namespace ExtendsFramework\Application\Http\Renderer;
 
-use ExtendsFramework\Application\Http\Renderer\RendererInterface;
 use ExtendsFramework\Http\Response\ResponseInterface;
 
-class JsonRenderer implements RendererInterface
+class Renderer implements RendererInterface
 {
     /**
      * @inheritDoc
      */
     public function render(ResponseInterface $response): void
     {
-        $body = $response->getBody();
-        if ($body === null) {
-            $body = '';
-        } else {
-            $body = json_encode($body, JSON_PARTIAL_OUTPUT_ON_ERROR);
-        }
-
+        $body = (string)$response->getBody();
         $response = $response
             ->andHeader('Content-Type', 'application/json')
             ->andHeader('Content-Length', (string)strlen($body));
