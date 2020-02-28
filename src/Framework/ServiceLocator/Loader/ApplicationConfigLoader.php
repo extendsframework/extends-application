@@ -12,8 +12,8 @@ use ExtendsFramework\Application\Http\Renderer\Renderer;
 use ExtendsFramework\Application\Http\Renderer\RendererInterface;
 use ExtendsFramework\Authentication\Framework\Http\Middleware\NotAuthenticatedMiddleware;
 use ExtendsFramework\Authorization\Framework\Http\Middleware\NotAuthorizedMiddleware;
+use ExtendsFramework\Hateoas\Framework\Http\Middleware\Hateoas\HateoasMiddleware;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
-use ExtendsFramework\JsonApi\Framework\Http\Middleware\JsonApiMiddleware;
 use ExtendsFramework\Logger\Framework\Http\Middleware\Logger\LoggerMiddleware;
 use ExtendsFramework\Router\Framework\Http\Middleware\Controller\ControllerMiddleware;
 use ExtendsFramework\Router\Framework\Http\Middleware\Router\RouterMiddleware;
@@ -49,7 +49,7 @@ class ApplicationConfigLoader implements LoaderInterface
                 RendererMiddleware::class => 1000,
                 ExceptionMiddleware::class => 900,
                 LoggerMiddleware::class => 800,
-                JsonApiMiddleware::class => 700,
+                HateoasMiddleware::class => 700,
                 RouterMiddleware::class => 600,
                 NotAuthorizedMiddleware::class => 500,
                 NotAuthenticatedMiddleware::class => 400,

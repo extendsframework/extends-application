@@ -16,7 +16,7 @@
         "extendsframework/extends-authorization": "^0.1.0",
         "extendsframework/extends-command": "^0.1.0",
         "extendsframework/extends-event": "^0.1.0",
-        "extendsframework/extends-jsonapi": "^0.1.0",
+        "extendsframework/extends-hateoas": "^0.1.0",
         "extendsframework/extends-logger": "^0.1.0",
         "extendsframework/extends-merger": "^0.1.0",
         "extendsframework/extends-message": "^0.1.0",
