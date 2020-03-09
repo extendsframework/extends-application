@@ -12,11 +12,6 @@ class Renderer implements RendererInterface
      */
     public function render(ResponseInterface $response): void
     {
-        $body = (string)$response->getBody();
-        $response = $response
-            ->andHeader('Content-Type', 'application/json')
-            ->andHeader('Content-Length', (string)strlen($body));
-
         foreach ($response->getHeaders() as $header => $value) {
             if (is_array($value)) {
                 $value = implode(', ', $value);
@@ -31,6 +26,6 @@ class Renderer implements RendererInterface
 
         http_response_code($response->getStatusCode());
 
-        echo $body;
+        echo $response->getBody();
     }
 }

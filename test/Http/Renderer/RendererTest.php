@@ -26,15 +26,6 @@ class RendererTest extends TestCase
             ->willReturn('{"foo":"bar"}');
 
         $response
-            ->expects($this->exactly(2))
-            ->method('andHeader')
-            ->withConsecutive(
-                ['Content-Type', 'application/json'],
-                ['Content-Length', '13']
-            )
-            ->willReturnSelf();
-
-        $response
             ->expects($this->once())
             ->method('getHeaders')
             ->willReturn([
@@ -87,15 +78,6 @@ class RendererTest extends TestCase
             ->expects($this->once())
             ->method('getBody')
             ->willReturn(null);
-
-        $response
-            ->expects($this->exactly(2))
-            ->method('andHeader')
-            ->withConsecutive(
-                ['Content-Type', 'application/json'],
-                ['Content-Length', '0']
-            )
-            ->willReturnSelf();
 
         $response
             ->expects($this->once())
