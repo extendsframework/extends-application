@@ -32,7 +32,7 @@ class ExceptionMiddlewareTest extends TestCase
             ->willReturn($response);
 
         /**
-         * @var RequestInterface         $request
+         * @var RequestInterface $request
          * @var MiddlewareChainInterface $chain
          */
         $middleware = new ExceptionMiddleware();
@@ -59,7 +59,7 @@ class ExceptionMiddlewareTest extends TestCase
             ->willThrowException(new Exception('Fancy exception message!', 136));
 
         /**
-         * @var RequestInterface         $request
+         * @var RequestInterface $request
          * @var MiddlewareChainInterface $chain
          */
         $middleware = new ExceptionMiddleware();
@@ -68,11 +68,7 @@ class ExceptionMiddlewareTest extends TestCase
         $this->assertIsObject($response);
         if ($response instanceof ResponseInterface) {
             $this->assertSame(500, $response->getStatusCode());
-            $this->assertSame([
-                'type' => '',
-                'title' => 'Internal server error.',
-                'error' => 'Failed to execute request, caught exception with code "136". Please try again.',
-            ], $response->getBody());
+            $this->assertSame(null, $response->getBody());
         }
     }
 }

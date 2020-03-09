@@ -20,16 +20,7 @@ class ExceptionMiddleware implements MiddlewareInterface
         try {
             return $chain->proceed($request);
         } catch (Throwable $throwable) {
-            return (new Response())
-                ->withStatusCode(500)
-                ->withBody([
-                    'type' => '',
-                    'title' => 'Internal server error.',
-                    'error' => sprintf(
-                        'Failed to execute request, caught exception with code "%d". Please try again.',
-                        $throwable->getCode()
-                    ),
-                ]);
+            return (new Response())->withStatusCode(500);
         }
     }
 }
