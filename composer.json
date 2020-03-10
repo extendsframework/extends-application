@@ -20,6 +20,7 @@
         "extendsframework/extends-logger": "^0.1.0",
         "extendsframework/extends-merger": "^0.1.0",
         "extendsframework/extends-message": "^0.1.0",
+        "extendsframework/extends-problem": "^0.1.0",
         "extendsframework/extends-router": "^0.1.0",
         "extendsframework/extends-security": "^0.1.0",
         "extendsframework/extends-servicelocator": "^0.1.0",

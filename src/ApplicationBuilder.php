@@ -21,6 +21,7 @@ use ExtendsFramework\Logger\Framework\ServiceLocator\Loader\LoggerConfigLoader;
 use ExtendsFramework\Merger\MergerException;
 use ExtendsFramework\Merger\MergerInterface;
 use ExtendsFramework\Merger\Recursive\RecursiveMerger;
+use ExtendsFramework\Problem\Framework\ServiceLocator\Loader\ProblemConfigLoader;
 use ExtendsFramework\Router\Framework\ServiceLocator\Loader\RouterConfigLoader;
 use ExtendsFramework\Security\Framework\ServiceLocator\Loader\SecurityConfigLoader;
 use ExtendsFramework\Serializer\Framework\ServiceLocator\Loader\SerializerConfigLoader;
@@ -116,19 +117,20 @@ class ApplicationBuilder implements ApplicationBuilderInterface
         ApplicationConfigLoader::class,
         AuthenticationConfigLoader::class,
         AuthorizationConfigLoader::class,
-        SecurityConfigLoader::class,
-        IdentityConfigLoader::class,
-        ConsoleConfigLoader::class,
-        ShellConfigLoader::class,
-        HttpConfigLoader::class,
-        RouterConfigLoader::class,
-        LoggerConfigLoader::class,
-        ValidatorConfigLoader::class,
-        SerializerConfigLoader::class,
         CommandConfigLoader::class,
+        ConsoleConfigLoader::class,
         EventConfigLoader::class,
-        SourcingConfigLoader::class,
         HateoasConfigLoader::class,
+        HttpConfigLoader::class,
+        IdentityConfigLoader::class,
+        LoggerConfigLoader::class,
+        ProblemConfigLoader::class,
+        RouterConfigLoader::class,
+        SecurityConfigLoader::class,
+        SerializerConfigLoader::class,
+        ShellConfigLoader::class,
+        SourcingConfigLoader::class,
+        ValidatorConfigLoader::class,
     ];
 
     /**
