@@ -15,7 +15,7 @@ use ExtendsFramework\Authorization\Framework\Http\Middleware\NotAuthorizedMiddle
 use ExtendsFramework\Hateoas\Framework\Http\Middleware\Hateoas\HateoasMiddleware;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
 use ExtendsFramework\Logger\Framework\Http\Middleware\Logger\LoggerMiddleware;
-use ExtendsFramework\Problem\Framework\Http\Middleware\ProblemMiddleware;
+use ExtendsFramework\ProblemDetails\Framework\Http\Middleware\ProblemDetailsMiddleware;
 use ExtendsFramework\Router\Framework\Http\Middleware\Controller\ControllerMiddleware;
 use ExtendsFramework\Router\Framework\Http\Middleware\Router\RouterMiddleware;
 use ExtendsFramework\Security\Framework\Http\Middleware\RouterAuthorizationMiddleware;
@@ -56,7 +56,7 @@ class ApplicationConfigLoaderTest extends TestCase
                 RendererMiddleware::class => 1100,
                 ExceptionMiddleware::class => 1000,
                 LoggerMiddleware::class => 900,
-                ProblemMiddleware::class => 800,
+                ProblemDetailsMiddleware::class => 800,
                 HateoasMiddleware::class => 700,
                 RouterMiddleware::class => 600,
                 NotAuthorizedMiddleware::class => 500,
