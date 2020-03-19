@@ -21,7 +21,7 @@ use ExtendsFramework\Logger\Framework\ServiceLocator\Loader\LoggerConfigLoader;
 use ExtendsFramework\Merger\MergerException;
 use ExtendsFramework\Merger\MergerInterface;
 use ExtendsFramework\Merger\Recursive\RecursiveMerger;
-use ExtendsFramework\Problem\Framework\ServiceLocator\Loader\ProblemConfigLoader;
+use ExtendsFramework\ProblemDetails\Framework\ServiceLocator\Loader\ProblemDetailsConfigLoader;
 use ExtendsFramework\Router\Framework\ServiceLocator\Loader\RouterConfigLoader;
 use ExtendsFramework\Security\Framework\ServiceLocator\Loader\SecurityConfigLoader;
 use ExtendsFramework\Serializer\Framework\ServiceLocator\Loader\SerializerConfigLoader;
@@ -124,7 +124,7 @@ class ApplicationBuilder implements ApplicationBuilderInterface
         HttpConfigLoader::class,
         IdentityConfigLoader::class,
         LoggerConfigLoader::class,
-        ProblemConfigLoader::class,
+        ProblemDetailsConfigLoader::class,
         RouterConfigLoader::class,
         SecurityConfigLoader::class,
         SerializerConfigLoader::class,
