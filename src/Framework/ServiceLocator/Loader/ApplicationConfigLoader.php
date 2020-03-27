@@ -49,8 +49,8 @@ class ApplicationConfigLoader implements LoaderInterface
             MiddlewareChainInterface::class => [
                 RendererMiddleware::class => 1100,
                 ProblemDetailsMiddleware::class => 1000,
-                InternalServerErrorMiddleware::class => 9000,
-                LoggerMiddleware::class => 900,
+                InternalServerErrorMiddleware::class => 900,
+                LoggerMiddleware::class => 800,
                 HateoasMiddleware::class => 700,
                 RouterMiddleware::class => 600,
                 NotAuthorizedMiddleware::class => 500,
