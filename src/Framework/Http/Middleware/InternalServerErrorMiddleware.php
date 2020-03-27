@@ -3,14 +3,16 @@ declare(strict_types=1);
 
 namespace ExtendsFramework\Application\Framework\Http\Middleware;
 
+use ExtendsFramework\Application\Framework\ProblemDetails\InternalServerErrorProblemDetails;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
 use ExtendsFramework\Http\Middleware\MiddlewareInterface;
 use ExtendsFramework\Http\Request\RequestInterface;
 use ExtendsFramework\Http\Response\Response;
 use ExtendsFramework\Http\Response\ResponseInterface;
+use ExtendsFramework\Logger\Exception\ReferencedExceptionInterface;
 use Throwable;
 
-class ExceptionMiddleware implements MiddlewareInterface
+class InternalServerErrorMiddleware implements MiddlewareInterface
 {
     /**
      * @inheritDoc
@@ -20,7 +22,13 @@ class ExceptionMiddleware implements MiddlewareInterface
         try {
             return $chain->proceed($request);
         } catch (Throwable $throwable) {
-            return (new Response())->withStatusCode(500);
+            if ($throwable instanceof ReferencedExceptionInterface) {
+                $reference = $throwable->getReference();
+            }
+
+            return (new Response())->withBody(
+                new InternalServerErrorProblemDetails($request, $reference ?? null)
+            );
         }
     }
 }

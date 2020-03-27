@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ExtendsFramework\Application\Framework\ServiceLocator\Loader;
 
 use ExtendsFramework\Application\ApplicationInterface;
-use ExtendsFramework\Application\Framework\Http\Middleware\ExceptionMiddleware;
+use ExtendsFramework\Application\Framework\Http\Middleware\InternalServerErrorMiddleware;
 use ExtendsFramework\Application\Framework\Http\Middleware\NotImplementedMiddleware;
 use ExtendsFramework\Application\Framework\Http\Middleware\RendererMiddleware;
 use ExtendsFramework\Application\Framework\ServiceLocator\Factory\ApplicationFactory;
@@ -45,7 +45,7 @@ class ApplicationConfigLoaderTest extends TestCase
                 ],
                 InvokableResolver::class => [
                     NotImplementedMiddleware::class => NotImplementedMiddleware::class,
-                    ExceptionMiddleware::class => ExceptionMiddleware::class,
+                    InternalServerErrorMiddleware::class => InternalServerErrorMiddleware::class,
                     RendererInterface::class => Renderer::class,
                 ],
                 ReflectionResolver::class => [
@@ -54,9 +54,9 @@ class ApplicationConfigLoaderTest extends TestCase
             ],
             MiddlewareChainInterface::class => [
                 RendererMiddleware::class => 1100,
-                ExceptionMiddleware::class => 1000,
+                ProblemDetailsMiddleware::class => 1000,
+                InternalServerErrorMiddleware::class => 9000,
                 LoggerMiddleware::class => 900,
-                ProblemDetailsMiddleware::class => 800,
                 HateoasMiddleware::class => 700,
                 RouterMiddleware::class => 600,
                 NotAuthorizedMiddleware::class => 500,

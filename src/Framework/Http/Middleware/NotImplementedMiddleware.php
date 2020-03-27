@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ExtendsFramework\Application\Framework\Http\Middleware;
 
+use ExtendsFramework\Application\Framework\ProblemDetails\NotImplementedProblemDetails;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
 use ExtendsFramework\Http\Middleware\MiddlewareInterface;
 use ExtendsFramework\Http\Request\RequestInterface;
@@ -16,6 +17,8 @@ class NotImplementedMiddleware implements MiddlewareInterface
      */
     public function process(RequestInterface $request, MiddlewareChainInterface $chain): ResponseInterface
     {
-        return (new Response())->withStatusCode(501);
+        return (new Response())->withBody(
+            new NotImplementedProblemDetails($request)
+        );
     }
 }
