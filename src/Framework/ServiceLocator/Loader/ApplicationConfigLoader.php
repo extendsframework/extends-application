@@ -10,8 +10,8 @@ use ExtendsFramework\Application\Framework\Http\Middleware\RendererMiddleware;
 use ExtendsFramework\Application\Framework\ServiceLocator\Factory\ApplicationFactory;
 use ExtendsFramework\Application\Http\Renderer\Renderer;
 use ExtendsFramework\Application\Http\Renderer\RendererInterface;
-use ExtendsFramework\Authentication\Framework\Http\Middleware\NotAuthenticatedMiddleware;
-use ExtendsFramework\Authorization\Framework\Http\Middleware\NotAuthorizedMiddleware;
+use ExtendsFramework\Authentication\Framework\Http\Middleware\UnauthorizedMiddleware;
+use ExtendsFramework\Authorization\Framework\Http\Middleware\ForbiddenMiddleware;
 use ExtendsFramework\Hateoas\Framework\Http\Middleware\Hateoas\HateoasMiddleware;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
 use ExtendsFramework\Logger\Framework\Http\Middleware\Logger\LoggerMiddleware;
@@ -53,8 +53,8 @@ class ApplicationConfigLoader implements LoaderInterface
                 LoggerMiddleware::class => 800,
                 HateoasMiddleware::class => 700,
                 RouterMiddleware::class => 600,
-                NotAuthorizedMiddleware::class => 500,
-                NotAuthenticatedMiddleware::class => 400,
+                ForbiddenMiddleware::class => 500,
+                UnauthorizedMiddleware::class => 400,
                 RouterAuthorizationMiddleware::class => 300,
                 ControllerMiddleware::class => 200,
                 NotImplementedMiddleware::class => 100,
