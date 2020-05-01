@@ -18,7 +18,8 @@ use ExtendsFramework\Logger\Framework\Http\Middleware\Logger\LoggerMiddleware;
 use ExtendsFramework\ProblemDetails\Framework\Http\Middleware\ProblemDetailsMiddleware;
 use ExtendsFramework\Router\Framework\Http\Middleware\Controller\ControllerMiddleware;
 use ExtendsFramework\Router\Framework\Http\Middleware\Router\RouterMiddleware;
-use ExtendsFramework\Security\Framework\Http\Middleware\RouterAuthorizationMiddleware;
+use ExtendsFramework\Security\Framework\Http\Middleware\AuthorizationMiddleware;
+use ExtendsFramework\Security\Framework\Http\Middleware\AuthenticationMiddleware;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
 use ExtendsFramework\ServiceLocator\Resolver\Factory\FactoryResolver;
 use ExtendsFramework\ServiceLocator\Resolver\Invokable\InvokableResolver;
@@ -47,15 +48,16 @@ class ApplicationConfigLoader implements LoaderInterface
                 ],
             ],
             MiddlewareChainInterface::class => [
-                RendererMiddleware::class => 1100,
-                ProblemDetailsMiddleware::class => 1000,
-                InternalServerErrorMiddleware::class => 900,
-                LoggerMiddleware::class => 800,
-                HateoasMiddleware::class => 700,
-                RouterMiddleware::class => 600,
-                ForbiddenMiddleware::class => 500,
-                UnauthorizedMiddleware::class => 400,
-                RouterAuthorizationMiddleware::class => 300,
+                RendererMiddleware::class => 1200,
+                ProblemDetailsMiddleware::class => 1100,
+                InternalServerErrorMiddleware::class => 1000,
+                LoggerMiddleware::class => 900,
+                HateoasMiddleware::class => 800,
+                UnauthorizedMiddleware::class => 700,
+                AuthenticationMiddleware::class => 600,
+                RouterMiddleware::class => 500,
+                ForbiddenMiddleware::class => 400,
+                AuthorizationMiddleware::class => 300,
                 ControllerMiddleware::class => 200,
                 NotImplementedMiddleware::class => 100,
             ],
