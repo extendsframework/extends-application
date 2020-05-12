@@ -10,16 +10,14 @@ use ExtendsFramework\Application\Framework\Http\Middleware\RendererMiddleware;
 use ExtendsFramework\Application\Framework\ServiceLocator\Factory\ApplicationFactory;
 use ExtendsFramework\Application\Http\Renderer\Renderer;
 use ExtendsFramework\Application\Http\Renderer\RendererInterface;
-use ExtendsFramework\Authentication\Framework\Http\Middleware\UnauthorizedMiddleware;
-use ExtendsFramework\Authorization\Framework\Http\Middleware\ForbiddenMiddleware;
 use ExtendsFramework\Hateoas\Framework\Http\Middleware\Hateoas\HateoasMiddleware;
 use ExtendsFramework\Http\Middleware\Chain\MiddlewareChainInterface;
 use ExtendsFramework\Logger\Framework\Http\Middleware\Logger\LoggerMiddleware;
 use ExtendsFramework\ProblemDetails\Framework\Http\Middleware\ProblemDetailsMiddleware;
 use ExtendsFramework\Router\Framework\Http\Middleware\Controller\ControllerMiddleware;
 use ExtendsFramework\Router\Framework\Http\Middleware\Router\RouterMiddleware;
-use ExtendsFramework\Security\Framework\Http\Middleware\AuthorizationMiddleware;
 use ExtendsFramework\Security\Framework\Http\Middleware\AuthenticationMiddleware;
+use ExtendsFramework\Security\Framework\Http\Middleware\AuthorizationMiddleware;
 use ExtendsFramework\ServiceLocator\Config\Loader\LoaderInterface;
 use ExtendsFramework\ServiceLocator\Resolver\Factory\FactoryResolver;
 use ExtendsFramework\ServiceLocator\Resolver\Invokable\InvokableResolver;
@@ -48,15 +46,13 @@ class ApplicationConfigLoader implements LoaderInterface
                 ],
             ],
             MiddlewareChainInterface::class => [
-                RendererMiddleware::class => 1200,
-                ProblemDetailsMiddleware::class => 1100,
-                InternalServerErrorMiddleware::class => 1000,
-                LoggerMiddleware::class => 900,
-                HateoasMiddleware::class => 800,
-                UnauthorizedMiddleware::class => 700,
+                RendererMiddleware::class => 1000,
+                ProblemDetailsMiddleware::class => 900,
+                InternalServerErrorMiddleware::class => 800,
+                LoggerMiddleware::class => 700,
                 AuthenticationMiddleware::class => 600,
-                RouterMiddleware::class => 500,
-                ForbiddenMiddleware::class => 400,
+                HateoasMiddleware::class => 500,
+                RouterMiddleware::class => 400,
                 AuthorizationMiddleware::class => 300,
                 ControllerMiddleware::class => 200,
                 NotImplementedMiddleware::class => 100,
